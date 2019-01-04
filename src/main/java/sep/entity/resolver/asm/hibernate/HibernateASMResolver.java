@@ -7,9 +7,9 @@ import sep.entity.struct.Entity;
 
 import java.io.IOException;
 
-public class HibernateASMResolver extends EntityResolver {
+public class HibernateASMResolver implements EntityResolver {
 
-    public Entity doResolve(Class entityClass) {
+    public Entity resolve(Class entityClass) {
         HibernateEntityClassVisitor classVistor = new HibernateEntityClassVisitor();
         ClassReader classReader = null;
         try {

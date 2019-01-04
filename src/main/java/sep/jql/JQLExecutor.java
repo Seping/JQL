@@ -4,20 +4,21 @@ import sep.entity.resolver.EntityRepository;
 import sep.entity.struct.Entity;
 import sep.entity.struct.Field;
 import sep.entity.struct.Id;
+import sep.jql.connection.ConnectionFactory;
 import sep.util.SQLStringUtil;
 
 import java.sql.*;
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class JQLExecutor {
 
-    public static <T> List<ComplexEntity<?>> execute(JQLStatement<T> jqlStatement, Connection connection) {
+    public static <T> List<ComplexEntity<T>> executeQuery(JQLStatement<T> jqlStatement) {
         JQL<T> jql = jqlStatement.jql;
         try {
-            PreparedStatement singlePreparedStatement = connection.prepareStatement(SQLCreator.createSQL(jqlStatement));
+            Connection connection = ConnectionFactory.getConnection();
+            PreparedStatement singlePreparedStatement = connection.prepareStatement(SQLCreator.createQuerySQL(jqlStatement));
             ResultSet resultSet = singlePreparedStatement.executeQuery();
-            List<ComplexEntity<?>> complexEntities = new ArrayList<>();
+            List<ComplexEntity<T>> complexEntities = new ArrayList<>();
             List<Class> order = getInstantiateOrder(jql);
             while (resultSet.next()) {
                 getEntityFromResultSet(resultSet, complexEntities, order);
@@ -32,18 +33,6 @@ public class JQLExecutor {
             e.printStackTrace();
             return new ArrayList<>();
         }
-    }
-
-    private static <T> List<Entity> getEntities(JQL<T> jql) {
-        List<Entity> entities = new ArrayList<>();
-        entities.add(EntityRepository.getByClass(jql.mainClass));
-        entities.addAll(
-                jql.joins
-                        .stream()
-                        .map(singleJoin -> EntityRepository.getByClass(singleJoin.joinClass))
-                        .collect(Collectors.toList())
-        );
-        return entities;
     }
 
     private static List<Class> getInstantiateOrder(JQL<?> jql) {
@@ -61,7 +50,7 @@ public class JQLExecutor {
         return classes;
     }
 
-    private static void getEntityFromResultSet(ResultSet resultSet, List<ComplexEntity<?>> complexEntities, List<Class> classOrder) throws SQLException {
+    private static <T> void getEntityFromResultSet(ResultSet resultSet, List<ComplexEntity<T>> complexEntities, List<Class> classOrder) throws SQLException {
         for (int i = 0, size = classOrder.size(); i < size; i++) {
             Class clazz = classOrder.get(i);
             Entity<?> entity = EntityRepository.getByClass(clazz);
@@ -70,8 +59,8 @@ public class JQLExecutor {
             if (id == null) {
                 continue;
             }
-            Optional<ComplexEntity<?>> complexEntityOptional = complexEntities.stream().filter(ce -> id.equals(idField.getValue(ce.mainEntity))).findFirst();
-            ComplexEntity<?> complexEntity;
+            Optional complexEntityOptional = complexEntities.stream().filter(ce -> id.equals(idField.getValue(ce.mainEntity))).findFirst();
+            ComplexEntity complexEntity;
             if (!complexEntityOptional.isPresent()) {
                 Object t = entity.newInstance();
                 for (Field field : entity.getFields()) {
@@ -80,13 +69,41 @@ public class JQLExecutor {
                 complexEntity = new ComplexEntity<>(t);
                 complexEntities.add(complexEntity);
             } else {
-                complexEntity = complexEntityOptional.get();
+                complexEntity = (ComplexEntity) complexEntityOptional.get();
             }
             if (i < size - 1) {
-                complexEntities = complexEntity.joinMap.computeIfAbsent(classOrder.get(i + 1), key -> new ArrayList<>());
+                complexEntities = (List<ComplexEntity<T>>) complexEntity.joinMap.computeIfAbsent(classOrder.get(i + 1), key -> new ArrayList<>());
             }
         }
 
     }
 
+    public static <T> Collection<T> executeSave(Collection<T> collection, Class<T> type) {
+
+        Entity<T> entity = EntityRepository.getByClass(type);
+
+        List<Integer> indexesWithoutId = new ArrayList<>();
+        List<Integer> ids = new ArrayList<>();
+        List<T> elementsWithId = new ArrayList<>();
+        List<T> elementsWithoutId = new ArrayList<>();
+
+        int i = 0;
+        for (T t : collection) {
+            Integer id = (Integer) entity.getIdField().getValue(t);
+            ids.add(id);
+            if (id != null) {
+                elementsWithId.add(t);
+            } else {
+                indexesWithoutId.add(i);
+                elementsWithoutId.add(t);
+            }
+            i++;
+        }
+
+        String updateSQL = SQLCreator.createUpdateSQL(entity, elementsWithId);
+        String insertSQL = SQLCreator.createInsertSQL(entity, elementsWithoutId);
+
+        //TODO
+        return null;
+    }
 }
