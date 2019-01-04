@@ -1,12 +1,6 @@
 package sep.jql;
 
-import sep.entity.resolver.EntityRepository;
-import sep.entity.struct.Entity;
-import sep.entity.struct.Field;
 import sep.util.SQLStringUtil;
-
-import java.io.Serializable;
-import java.lang.invoke.SerializedLambda;
 
 public class Condition<T> {
 

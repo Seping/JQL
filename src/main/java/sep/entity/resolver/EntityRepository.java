@@ -1,11 +1,9 @@
 package sep.entity.resolver;
 
 import sep.entity.resolver.asm.hibernate.HibernateASMResolver;
-import sep.entity.struct.Entity;
+import sep.entity.struct.entity.Entity;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class EntityRepository {

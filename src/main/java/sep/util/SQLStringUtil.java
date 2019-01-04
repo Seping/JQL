@@ -1,8 +1,8 @@
 package sep.util;
 
 import sep.entity.resolver.EntityRepository;
-import sep.entity.struct.Entity;
-import sep.entity.struct.Field;
+import sep.entity.struct.entity.Entity;
+import sep.entity.struct.field.Field;
 import sep.jql.Attribute;
 
 import java.lang.invoke.SerializedLambda;

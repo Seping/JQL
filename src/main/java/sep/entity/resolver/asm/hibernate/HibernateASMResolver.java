@@ -3,7 +3,7 @@ package sep.entity.resolver.asm.hibernate;
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassWriter;
 import sep.entity.resolver.EntityResolver;
-import sep.entity.struct.Entity;
+import sep.entity.struct.entity.Entity;
 
 import java.io.IOException;
 

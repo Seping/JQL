@@ -1,9 +1,9 @@
 package sep.jql;
 
 import sep.entity.resolver.EntityRepository;
-import sep.entity.struct.Entity;
-import sep.entity.struct.Field;
-import sep.entity.struct.Id;
+import sep.entity.struct.entity.Entity;
+import sep.entity.struct.field.Field;
+import sep.entity.struct.field.special.Id;
 
 import java.sql.Date;
 import java.util.ArrayList;

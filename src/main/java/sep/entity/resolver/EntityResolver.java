@@ -1,6 +1,6 @@
 package sep.entity.resolver;
 
-import sep.entity.struct.Entity;
+import sep.entity.struct.entity.Entity;
 
 public interface EntityResolver {
 

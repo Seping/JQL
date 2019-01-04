@@ -1,12 +1,12 @@
 package sep.entity.resolver.asm.hibernate;
 
 import org.objectweb.asm.*;
-import org.objectweb.asm.signature.SignatureWriter;
-import sep.entity.struct.*;
+import sep.entity.struct.entity.Entity;
+import sep.entity.struct.field.Field;
+import sep.entity.struct.field.special.Id;
+import sep.entity.struct.field.value.FieldValueGetter;
 
 import java.io.*;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -138,7 +138,7 @@ public class HibernateEntityClassVisitor extends ClassVisitor {
         fieldValueSetterClassWriter.visit(
                 V1_8,
                 ACC_PUBLIC + ACC_SUPER,
-                "sep/entity/struct/FieldValueSetter$" + tableName + "$" + name.replaceFirst("get", "set"),
+                "sep/entity/struct/field/value/FieldValueSetter$" + tableName + "$" + name.replaceFirst("get", "set"),
                 null,
                 "java/lang/Object",
                 new String[] {"java/util/function/BiConsumer"}
@@ -196,7 +196,7 @@ public class HibernateEntityClassVisitor extends ClassVisitor {
         acceptVisitor.visitEnd();
         fieldValueSetterClassWriter.visitEnd();
         byte[] b = fieldValueSetterClassWriter.toByteArray();
-        Class newFieldValueSetterClass = new ClassLoader().defineClass("sep.entity.struct.FieldValueSetter$" + tableName + "$" + name.replaceFirst("get", "set"), b);
+        Class newFieldValueSetterClass = new ClassLoader().defineClass("sep.entity.struct.field.value.FieldValueSetter$" + tableName + "$" + name.replaceFirst("get", "set"), b);
         BiConsumer biConsumer = (BiConsumer) newFieldValueSetterClass.getConstructor().newInstance();
         return biConsumer;
     }
@@ -207,9 +207,9 @@ public class HibernateEntityClassVisitor extends ClassVisitor {
         FieldValueGetterClassWriter fieldValueGetterClassWriter = new FieldValueGetterClassWriter();
         fieldValueGetterClassWriter.visit(V1_8,
                 ACC_PUBLIC + ACC_SUPER,
-                "sep/entity/struct/FieldValueGetter$" + tableName + "$" + name,
+                FieldValueGetter.class.getName().replaceAll("\\.", "/") + "$" + tableName + "$" + name,
                 internalEntityName,
-                "sep/entity/struct/FieldValueGetter",
+                FieldValueGetter.class.getName().replaceAll("\\.", "/"),
                 null);
         //构造函数
         MethodVisitor constructorVisitor = fieldValueGetterClassWriter.visitMethod(ACC_PUBLIC,
@@ -220,7 +220,7 @@ public class HibernateEntityClassVisitor extends ClassVisitor {
         constructorVisitor.visitMaxs(1, 2);
         constructorVisitor.visitVarInsn(ALOAD, 0);
         constructorVisitor.visitMethodInsn(INVOKESPECIAL,
-                "sep/entity/struct/FieldValueGetter",
+                FieldValueGetter.class.getName().replaceAll("\\.", "/"),
                 "<init>",
                 "()V",
                 false);
@@ -244,7 +244,7 @@ public class HibernateEntityClassVisitor extends ClassVisitor {
         getValueVisitor.visitEnd();
         fieldValueGetterClassWriter.visitEnd();
         byte[] b = fieldValueGetterClassWriter.toByteArray();
-        Class newFieldValueGetterClass = new ClassLoader().defineClass("sep.entity.struct.FieldValueGetter$" + tableName + "$" + name, b);
+        Class newFieldValueGetterClass = new ClassLoader().defineClass(FieldValueGetter.class.getName() + "$" + tableName + "$" + name, b);
         FieldValueGetter fieldValueGetter = (FieldValueGetter) newFieldValueGetterClass.getConstructor().newInstance();
         return fieldValueGetter;
     }
