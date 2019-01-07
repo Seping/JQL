@@ -1,4 +1,4 @@
-package sep.entity.用来存放测试用的实体类;
+package 用来存放测试用的实体类;
 
 import sep.dao.BaseDao;
 

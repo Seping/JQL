@@ -1,9 +1,11 @@
-import sep.entity.用来存放测试用的实体类.*;
+
 import sep.jql.ComplexEntity;
 import sep.jql.connection.ConnectionFactory;
+import 用来存放测试用的实体类.*;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.util.ArrayList;
 import java.util.List;
 
 public class Test {
@@ -65,7 +67,7 @@ public class Test {
         String s = SQLCreator.createQuerySQL(jqlStatement);
         System.out.println(s);*/
 
-        try {
+        /*try {
             Class.forName("com.mysql.jdbc.Driver");
             Connection connection = DriverManager.getConnection("jdbc:mysql://192.168.7.237:3306/emplus2?useSSL=false&serverTimezone=Asia/Shanghai&characterEncoding=UTF-8",
                     "emt", "chinaemt");
@@ -109,9 +111,20 @@ public class Test {
             ComplexEntity<AppDbMaterial> complexEntity = list.get(0);
             List<AppContactor> contactors = complexEntity.getJoinEntities(AppContactor.class);
             System.out.println(contactors.size());
+
+            List<AppUser> users = new ArrayList<>();
+            for (int i = 0; i < 10; i++) {
+                AppUser user = new AppUser();
+                user.setVcUsername("test" + i);
+                users.add(user);
+            }
+            AppUserDao userDao = new AppUserDao();
+            userDao.save(users);
+            System.out.println(users.size());
+
         } catch (Exception e) {
             e.printStackTrace();
-        }
+        }*/
 
 
 

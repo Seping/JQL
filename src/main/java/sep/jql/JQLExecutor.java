@@ -129,7 +129,7 @@ public class JQLExecutor {
             }
 
             //query again
-            PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM " + entity.getTableNameWithQuote() + " WHERE " + entity.getIdField().getColumnNameWithQuote() + " = " + SQLStringUtil.concatValueInBrackets(ids));
+            PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM " + entity.getTableNameWithQuote() + " WHERE " + entity.getIdField().getColumnNameWithQuote() + " IN " + SQLStringUtil.concatValueInBrackets(ids));
             ResultSet resultSet = preparedStatement.executeQuery();
             List<T> result = new ArrayList<>();
             while (resultSet.next()) {

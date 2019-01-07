@@ -35,4 +35,8 @@ public class JQL<T> {
     public void limit(Integer offset, Integer rowCount) {
         Limit limit = new Limit(this, offset, rowCount);
     }
+
+    public JQLStatement<T> end() {
+        return new JQLStatement<>(this);
+    }
 }
