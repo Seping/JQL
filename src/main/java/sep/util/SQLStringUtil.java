@@ -6,6 +6,7 @@ import sep.entity.struct.field.Field;
 import sep.jql.Attribute;
 
 import java.lang.invoke.SerializedLambda;
+import java.util.Collection;
 
 public class SQLStringUtil {
 
@@ -41,4 +42,27 @@ public class SQLStringUtil {
         return null;
     }
 
+    public static <T> String concatFieldValueInBrackets(Collection<T> collection, Field field) {
+        StringBuffer stringBuffer = new StringBuffer("(");
+        for (T t : collection) {
+            stringBuffer.append(toSQLValueString(field.getValue(t)));
+            stringBuffer.append(", ");
+        }
+        stringBuffer.deleteCharAt(stringBuffer.lastIndexOf(","));
+        stringBuffer.deleteCharAt(stringBuffer.lastIndexOf(" "));
+        stringBuffer.append(")");
+        return stringBuffer.toString();
+    }
+
+    public static <T> String concatValueInBrackets(Collection<T> collection) {
+        StringBuffer stringBuffer = new StringBuffer("(");
+        for (T t : collection) {
+            stringBuffer.append(toSQLValueString(t));
+            stringBuffer.append(", ");
+        }
+        stringBuffer.deleteCharAt(stringBuffer.lastIndexOf(","));
+        stringBuffer.deleteCharAt(stringBuffer.lastIndexOf(" "));
+        stringBuffer.append(")");
+        return stringBuffer.toString();
+    }
 }

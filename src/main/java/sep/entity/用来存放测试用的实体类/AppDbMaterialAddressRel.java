@@ -1,10 +1,14 @@
 package sep.entity.用来存放测试用的实体类;
 
-import org.hibernate.annotations.*;
+import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.annotations.Generated;
+import org.hibernate.annotations.GenerationTime;
+import org.hibernate.annotations.Where;
+import sep.annotation.*;
 
-import javax.persistence.*;
 import javax.persistence.Entity;
-import javax.persistence.Table;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import java.sql.Timestamp;
 
 @Entity
@@ -119,8 +123,8 @@ public class AppDbMaterialAddressRel {
     }
 
     @Basic
-    @Column(name = "sys_dt_create", updatable = false)
-    @CreationTimestamp
+    @Column(name = "sys_dt_create")
+    @CreateTimestamp
     public Timestamp getSysDtCreate() {
         return sysDtCreate;
     }
@@ -161,7 +165,7 @@ public class AppDbMaterialAddressRel {
     }
 
     @Basic
-    @Column(name = "sys_i_status", updatable = false)
+    @Column(name = "sys_i_status")
     @Generated(GenerationTime.INSERT)
     @ColumnDefault("0")
     public Integer getSysIStatus() {

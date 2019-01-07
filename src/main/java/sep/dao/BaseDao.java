@@ -11,7 +11,6 @@ public class BaseDao<T> {
     private Class<T> type = (Class<T>)((ParameterizedType)this.getClass().getGenericSuperclass()).getActualTypeArguments()[0];
 
     public Collection<T> save(Collection<T> collection) {
-        //TODO
         return JQLExecutor.executeSave(collection, type);
     }
 

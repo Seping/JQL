@@ -3,10 +3,11 @@ package sep.entity.resolver.asm.hibernate;
 import org.objectweb.asm.*;
 import sep.entity.struct.entity.Entity;
 import sep.entity.struct.field.Field;
-import sep.entity.struct.field.special.Id;
+import sep.entity.struct.field.special.*;
 import sep.entity.struct.field.value.FieldValueGetter;
 
 import java.io.*;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -37,7 +38,7 @@ public class HibernateEntityClassVisitor extends ClassVisitor {
     @Override
     public AnnotationVisitor visitAnnotation(String descriptor, boolean visible) {
         //按@Table解析表名
-        if (descriptor.equals("Ljavax/persistence/Table;")) {
+        if (descriptor.equals("Lsep/annotation/Table;")) {
             TableAnnotationVisitor tableAnnotationVisitor = new TableAnnotationVisitor();
             return tableAnnotationVisitor;
         }
@@ -295,7 +296,7 @@ public class HibernateEntityClassVisitor extends ClassVisitor {
         public AnnotationVisitor visitAnnotation(String descriptor, final boolean visible) {
             Map<String, Object> annotation = new HashMap<>();
             annotations.put(descriptor, annotation);
-            if (descriptor.equals("Ljavax/persistence/Column;")) {
+            if (descriptor.equals("Lsep/annotation/Column;")) {
                 ColumnAnnotationVisitor columnAnnotationVisitor = new ColumnAnnotationVisitor(annotation);
                 return columnAnnotationVisitor;
             } else {
@@ -305,10 +306,23 @@ public class HibernateEntityClassVisitor extends ClassVisitor {
 
         @Override
         public void visitEnd() {
-            String columnName = String.valueOf(annotations.get("Ljavax/persistence/Column;").get("name"));
+            String columnName = String.valueOf(annotations.get("Lsep/annotation/Column;").get("name"));
             Field field;
-            if (annotations.containsKey("Ljavax/persistence/Id;")) {
+            if (annotations.containsKey("Lsep/annotation/Id;")) {
                 field = new Id(columnName);
+            } else if (annotations.containsKey("Lsep/annotation/CreateTimestamp;")) {
+                field = new CreateTimestamp(columnName);
+                field.setDefaultValueSupplier(() -> new Timestamp(System.currentTimeMillis()));
+            } else if (annotations.containsKey("Lsep/annotation/UpdateTimestamp;")) {
+                field = new UpdateTimestamp(columnName);
+                field.setDefaultValueSupplier(() -> new Timestamp(System.currentTimeMillis()));
+            } else if (annotations.containsKey("Lsep/annotation/CreateUser;")) {
+                field = new CreateUser(columnName);
+            } else if (annotations.containsKey("Lsep/annotation/UpdateUser;")) {
+                field = new UpdateUser(columnName);
+            } else if (annotations.containsKey("Lsep/annotation/Tombstone;")) {
+                field = new Tombstone(columnName);
+                field.setDefaultValueSupplier(() -> 0);
             } else {
                 field = new Field(columnName);
             }

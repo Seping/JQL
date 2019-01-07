@@ -21,12 +21,12 @@ public class JQLExecutor {
             List<ComplexEntity<T>> complexEntities = new ArrayList<>();
             List<Class> order = getInstantiateOrder(jql);
             while (resultSet.next()) {
-                getEntityFromResultSet(resultSet, complexEntities, order);
+                getComplexEntityFromResultSet(resultSet, complexEntities, order);
             }
 
-            resultSet.close();
+            /*resultSet.close();
             singlePreparedStatement.close();
-            connection.close();
+            connection.close();*/
 
             return complexEntities;
         } catch (SQLException e) {
@@ -50,7 +50,7 @@ public class JQLExecutor {
         return classes;
     }
 
-    private static <T> void getEntityFromResultSet(ResultSet resultSet, List<ComplexEntity<T>> complexEntities, List<Class> classOrder) throws SQLException {
+    private static <T> void getComplexEntityFromResultSet(ResultSet resultSet, List<ComplexEntity<T>> complexEntities, List<Class> classOrder) throws SQLException {
         for (int i = 0, size = classOrder.size(); i < size; i++) {
             Class clazz = classOrder.get(i);
             Entity<?> entity = EntityRepository.getByClass(clazz);
@@ -103,7 +103,50 @@ public class JQLExecutor {
         String updateSQL = SQLCreator.createUpdateSQL(entity, elementsWithId);
         String insertSQL = SQLCreator.createInsertSQL(entity, elementsWithoutId);
 
-        //TODO
-        return null;
+        Connection connection = ConnectionFactory.getConnection();
+        List<Integer> insertIds = new ArrayList<>();
+        try {
+            if (updateSQL != null) {
+                PreparedStatement updateStatement = connection.prepareStatement(updateSQL, Statement.RETURN_GENERATED_KEYS);
+                updateStatement.executeUpdate();
+            }
+
+            if (insertSQL != null) {
+                PreparedStatement insertStatement = connection.prepareStatement(insertSQL, Statement.RETURN_GENERATED_KEYS);
+                insertStatement.executeUpdate();
+                ResultSet idResultSet = insertStatement.getGeneratedKeys();
+                while (idResultSet.next()) {
+                    insertIds.add(idResultSet.getInt(1));
+                }
+            }
+
+
+            //TODO: is ArrayList the best struct?
+            i = 0;
+            for (Integer indexWithoutId : indexesWithoutId) {
+                ids.set(indexWithoutId, insertIds.get(i));
+                i++;
+            }
+
+            //query again
+            PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM " + entity.getTableNameWithQuote() + " WHERE " + entity.getIdField().getColumnNameWithQuote() + " = " + SQLStringUtil.concatValueInBrackets(ids));
+            ResultSet resultSet = preparedStatement.executeQuery();
+            List<T> result = new ArrayList<>();
+            while (resultSet.next()) {
+                T t = entity.newInstance();
+                for (Field field : entity.getFields()) {
+                    field.setValue(t, SQLStringUtil.stringToSQLValue(resultSet.getString(entity.getTableName() + "." + field.getColumnName()), field.getType()));
+                }
+                result.add(t);
+            }
+            collection.clear();
+            collection.addAll(result);
+            return collection;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return new ArrayList<>();
+        }
+
+
     }
 }

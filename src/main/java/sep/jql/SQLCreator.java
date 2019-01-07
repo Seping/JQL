@@ -4,6 +4,7 @@ import sep.entity.resolver.EntityRepository;
 import sep.entity.struct.entity.Entity;
 import sep.entity.struct.field.Field;
 import sep.entity.struct.field.special.Id;
+import sep.util.SQLStringUtil;
 
 import java.sql.Date;
 import java.util.ArrayList;
@@ -130,6 +131,36 @@ public class SQLCreator {
 
     public static <T> String createInsertSQL(Entity<T> entity, List<T> elementsWithoutId) {
         //TODO
-        return null;
+        if (elementsWithoutId.size() == 0) { return null; }
+
+        List<Field> fields = entity.getFields();
+        fields.removeIf(field -> field instanceof Id);
+
+        StringBuffer stringBuffer = new StringBuffer();
+        //INSERT INTO table_name
+        stringBuffer.append("INSERT INTO " + entity.getTableNameWithQuote());
+        //(column1, column2, ...)
+        stringBuffer.append("(");
+        for (Field field : fields) {
+            stringBuffer.append(field.getColumnNameWithQuote());
+            stringBuffer.append(", ");
+        }
+        stringBuffer.deleteCharAt(stringBuffer.lastIndexOf(", "));
+        stringBuffer.append(")\n");
+        //VALUES (...)
+        stringBuffer.append("VALUES");
+        for (T element : elementsWithoutId) {
+            stringBuffer.append("\t(");
+            for (Field field : fields) {
+                stringBuffer.append(SQLStringUtil.toSQLValueString(field.getValue(element)));
+                stringBuffer.append(", ");
+            }
+            stringBuffer.deleteCharAt(stringBuffer.lastIndexOf(","));
+            stringBuffer.deleteCharAt(stringBuffer.lastIndexOf(" "));
+            stringBuffer.append("),\n\r");
+        }
+        stringBuffer.deleteCharAt(stringBuffer.lastIndexOf(",\n\r"));
+
+        return stringBuffer.toString();
     }
 }

@@ -1,10 +1,14 @@
 package sep.entity.用来存放测试用的实体类;
 
-import org.hibernate.annotations.*;
+import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.annotations.Generated;
+import org.hibernate.annotations.GenerationTime;
+import org.hibernate.annotations.Where;
+import sep.annotation.*;
 
-import javax.persistence.*;
 import javax.persistence.Entity;
-import javax.persistence.Table;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import java.sql.Timestamp;
 
 @Entity
@@ -190,7 +194,7 @@ public class AppContactor {
     public void setVcExtend3(String vcExtend3) { this.vcExtend3 = vcExtend3; }
 
     @Basic
-    @CreationTimestamp
+    @CreateTimestamp
     @Column(name="sys_dt_create")
     public Timestamp getSysDtCreate() { return sysDtCreate; }
 
