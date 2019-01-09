@@ -1,12 +1,16 @@
 
+import sep.jql.Attribute;
 import sep.jql.ComplexEntity;
+import sep.jql.Root;
 import sep.jql.connection.ConnectionFactory;
 import 用来存放测试用的实体类.*;
 
+import java.lang.invoke.*;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Supplier;
 
 public class Test {
 
@@ -133,6 +137,32 @@ public class Test {
         Field field = entity.getFields().get(0);
         AppContactor contactor = entity.newInstance();
         field.setValue(contactor, 21);*/
+
+
+        AppContactor contactor = new AppContactor();
+        contactor.setiId(1);
+
+        MethodHandles.Lookup lookup = MethodHandles.lookup();
+        try {
+            MethodHandle getiIdMethod = lookup.findVirtual(AppContactor.class, "getiId", MethodType.methodType(Integer.class));
+            MethodType methodType = MethodType.methodType(Object.class);    //Attribute.get() 的返回值类型？
+            MethodType invokedType = MethodType.methodType(Attribute.class);
+            CallSite callSite = (CallSite) LambdaMetafactory.altMetafactory(lookup,
+                    "get",
+                    invokedType,
+                    MethodType.methodType(Object.class, Object.class),
+                    getiIdMethod,
+                    MethodType.methodType(Object.class, AppContactor.class),
+                    LambdaMetafactory.FLAG_SERIALIZABLE); //won't work
+            MethodHandle factory = callSite.getTarget();
+            Attribute attribute = (Attribute) factory.invoke();
+            System.out.println(attribute.get(contactor));
+            SerializedLambda serializedLambda = attribute.serialized();
+            System.out.println(serializedLambda);
+        } catch (Throwable e) {
+            e.printStackTrace();
+        }
+
 
     }
 

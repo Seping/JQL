@@ -11,14 +11,16 @@ public class ConnectionFactory {
 
     private ConnectionAcquirer connectionAcquirer;
 
-    public static void setConnectionAcquirer(ConnectionAcquirer connectionAcquirer) {
+    public static ConnectionFactory getInstance() {
+        return singleInstance;
+    }
+
+    public void setConnectionAcquirer(ConnectionAcquirer connectionAcquirer) {
         singleInstance.connectionAcquirer = connectionAcquirer;
     }
 
     public static Connection getConnection() {
         return singleInstance.connectionAcquirer.getConnection();
     }
-
-
 
 }

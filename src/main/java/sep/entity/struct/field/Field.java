@@ -1,6 +1,8 @@
 package sep.entity.struct.field;
 
+import sep.entity.struct.entity.Entity;
 import sep.entity.struct.field.value.FieldValueGetter;
+import sep.jql.Attribute;
 
 import java.util.function.BiConsumer;
 import java.util.function.Supplier;
@@ -59,5 +61,7 @@ public class Field {
     public Object getDefaultValue() {
         return defaultValueSupplier == null ? null : defaultValueSupplier.get();
     }
+
+    /*public Attribute getAttribute(Entity entity, )*/
 
 }
