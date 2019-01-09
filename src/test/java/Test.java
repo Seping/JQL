@@ -1,8 +1,9 @@
 
-import sep.jql.Attribute;
-import sep.jql.ComplexEntity;
-import sep.jql.Root;
+import sep.entity.resolver.EntityRepository;
+import sep.entity.struct.entity.Entity;
+import sep.jql.*;
 import sep.jql.connection.ConnectionFactory;
+import sep.jql.request.OnRequest;
 import 用来存放测试用的实体类.*;
 
 import java.lang.invoke.*;
@@ -22,6 +23,7 @@ public class Test {
                 .on((root1, root2, conditionBuilder) -> {
                     conditionBuilder
                             .equal(root1.getAttribute(AppDbMaterial::getiMaterialAddressId), root2.getAttribute(AppDbMaterialAddress::getiId))
+                            .and()
                             //.and()
                             //.equal(root2.getAttribute(AppDbMaterialAddress::getiStatus), 0)
                             ;
@@ -133,7 +135,7 @@ public class Test {
 
 
 
-        /*Entity<AppContactor> entity = new HibernateASMResolver().resolve(AppContactor.class);
+        /*Entity<AppContactor> entity = new AnnotationBasicASMResolver().resolve(AppContactor.class);
         Field field = entity.getFields().get(0);
         AppContactor contactor = entity.newInstance();
         field.setValue(contactor, 21);*/
@@ -142,7 +144,7 @@ public class Test {
         AppContactor contactor = new AppContactor();
         contactor.setiId(1);
 
-        MethodHandles.Lookup lookup = MethodHandles.lookup();
+        /*MethodHandles.Lookup lookup = MethodHandles.lookup();
         try {
             MethodHandle getiIdMethod = lookup.findVirtual(AppContactor.class, "getiId", MethodType.methodType(Integer.class));
             MethodType methodType = MethodType.methodType(Object.class);    //Attribute.get() 的返回值类型？
@@ -161,7 +163,14 @@ public class Test {
             System.out.println(serializedLambda);
         } catch (Throwable e) {
             e.printStackTrace();
-        }
+        }*/
+
+        OnRequest onRequest = conjunctionBuilder -> {
+            conjunctionBuilder
+                    .and()
+                    .equal((Attribute<AppContactor>) AppContactor::getiId,
+                            1);
+        };
 
 
     }

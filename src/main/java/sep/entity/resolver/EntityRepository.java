@@ -1,6 +1,6 @@
 package sep.entity.resolver;
 
-import sep.entity.resolver.asm.hibernate.HibernateASMResolver;
+import sep.entity.resolver.asm.AnnotationBasicASMResolver;
 import sep.entity.struct.entity.Entity;
 
 import java.util.HashMap;
@@ -10,14 +10,7 @@ public class EntityRepository {
 
     private static EntityResolver entityResolver;
     static {
-        ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
-        try {
-            classLoader.loadClass("javax.persistence.Table");
-            entityResolver = new HibernateASMResolver();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-            entityResolver = null;
-        }
+        entityResolver = new AnnotationBasicASMResolver();
     }
 
     private static Map<String, Entity<?>> map = new HashMap<>();

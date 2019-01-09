@@ -2,6 +2,7 @@ package sep.entity.struct.entity;
 
 import sep.entity.struct.field.Field;
 import sep.entity.struct.field.special.Id;
+import sep.entity.struct.field.special.Tombstone;
 
 import java.util.List;
 import java.util.function.Supplier;
@@ -23,6 +24,7 @@ public class Entity<T> {
     private Supplier<T> supplier;
 
     private Id id;
+    private Tombstone tombstone;
 
     public Entity(Class<T> entityClass, String tableName, List<Field> fields, Supplier<T> supplier) {
         this.entityClass = entityClass;
@@ -66,5 +68,16 @@ public class Entity<T> {
                     .get();
         }
         return id;
+    }
+
+    public Tombstone getTombstone() {
+        if (tombstone == null) {
+            tombstone = (Tombstone) fields.
+                    stream()
+                    .filter(field -> field instanceof Tombstone)
+                    .findFirst()
+                    .get();
+        }
+        return tombstone;
     }
 }

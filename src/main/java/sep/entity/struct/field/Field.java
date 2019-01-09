@@ -4,6 +4,7 @@ import sep.entity.struct.entity.Entity;
 import sep.entity.struct.field.value.FieldValueGetter;
 import sep.jql.Attribute;
 
+import java.lang.invoke.*;
 import java.util.function.BiConsumer;
 import java.util.function.Supplier;
 
@@ -62,6 +63,25 @@ public class Field {
         return defaultValueSupplier == null ? null : defaultValueSupplier.get();
     }
 
-    /*public Attribute getAttribute(Entity entity, )*/
+    public <T> Attribute<T> getAttribute(Entity<T> entity) {
+        MethodHandles.Lookup lookup = MethodHandles.lookup();
+        try {
+            MethodHandle getter = lookup.findVirtual(entity.getEntityClass(), this.getterName, MethodType.methodType(type));
+            MethodType invokedType = MethodType.methodType(Attribute.class);
+            CallSite callSite = LambdaMetafactory.altMetafactory(lookup,
+                    "get",
+                    invokedType,
+                    MethodType.methodType(Object.class, Object.class),
+                    getter,
+                    MethodType.methodType(Object.class, entity.getEntityClass()),
+                    LambdaMetafactory.FLAG_SERIALIZABLE);
+            MethodHandle factory = callSite.getTarget();
+            Attribute<T> attribute = (Attribute<T>) factory.invoke();
+            return attribute;
+        } catch (Throwable e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
 
 }
