@@ -1,17 +1,8 @@
 
-import sep.entity.resolver.EntityRepository;
-import sep.entity.struct.entity.Entity;
+import sep.entity.struct.entity.ArbitraryEntity;
 import sep.jql.*;
-import sep.jql.connection.ConnectionFactory;
 import sep.jql.request.OnRequest;
 import 用来存放测试用的实体类.*;
-
-import java.lang.invoke.*;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.function.Supplier;
 
 public class Test {
 
@@ -52,7 +43,6 @@ public class Test {
                 .orderBy(AppDbMaterial::getDtQuaguaPeriod)
                 //.limit(0 ,1)
                 .end();*/
-
         
         /*try {
             Class.forName("com.mysql.jdbc.Driver");
@@ -68,7 +58,6 @@ public class Test {
         } catch (Exception e) {
             e.printStackTrace();
         }
-
 
         String s = SQLCreator.createQuerySQL(jqlStatement);
         System.out.println(s);*/
@@ -132,14 +121,10 @@ public class Test {
             e.printStackTrace();
         }*/
 
-
-
-
         /*Entity<AppContactor> entity = new AnnotationBasicASMResolver().resolve(AppContactor.class);
         Field field = entity.getFields().get(0);
         AppContactor contactor = entity.newInstance();
         field.setValue(contactor, 21);*/
-
 
         AppContactor contactor = new AppContactor();
         contactor.setiId(1);
@@ -164,14 +149,6 @@ public class Test {
         } catch (Throwable e) {
             e.printStackTrace();
         }*/
-
-        OnRequest onRequest = conjunctionBuilder -> {
-            conjunctionBuilder
-                    .and()
-                    .equal((Attribute<AppContactor>) AppContactor::getiId,
-                            1);
-        };
-
 
     }
 
