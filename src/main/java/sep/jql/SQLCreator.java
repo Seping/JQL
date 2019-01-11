@@ -3,7 +3,6 @@ package sep.jql;
 import sep.entity.resolver.EntityRepository;
 import sep.entity.struct.entity.Entity;
 import sep.entity.struct.field.Field;
-import sep.entity.struct.field.special.Id;
 import sep.util.SQLStringUtil;
 
 import java.sql.Date;

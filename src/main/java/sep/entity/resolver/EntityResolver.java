@@ -4,6 +4,6 @@ import sep.entity.struct.entity.Entity;
 
 public interface EntityResolver {
 
-    Entity resolve(Class entityClass);
+    <T> Entity<T> resolve(Class<T> entityClass);
 
 }

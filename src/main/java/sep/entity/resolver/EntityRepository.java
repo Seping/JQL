@@ -6,27 +6,33 @@ import sep.entity.struct.entity.Entity;
 import java.util.HashMap;
 import java.util.Map;
 
-public class EntityRepository {
+public final class EntityRepository {
 
-    private static EntityResolver entityResolver;
-    static {
-        entityResolver = new AnnotationBasicASMResolver();
+    private EntityRepository() {}
+
+    private static EntityRepository singleInstance;
+
+    private EntityResolver entityResolver;
+    private Map<Class<?>, Entity<?>> repository = new HashMap<>();
+
+    public static Entity<?> getEntity(Class<?> entityType) {
+        Entity<?> entity = getInstance().repository
+                .computeIfAbsent(entityType, key -> singleInstance.entityResolver.resolve(key));
+        return entity;
     }
 
-    private static Map<String, Entity<?>> map = new HashMap<>();
-
-    public static Entity getByClass(Class clazz) {
-        return map.computeIfAbsent(clazz.getName(), key -> entityResolver.resolve(clazz));
+    private static EntityRepository getInstance() {
+        if (singleInstance == null) {
+            singleInstance = new EntityRepository();
+        }
+        if (singleInstance.entityResolver == null) {
+            singleInstance.entityResolver = new AnnotationBasicASMResolver();
+        }
+        return singleInstance;
     }
 
-    public static Entity getByClassName(String fullClassName) {
-        return map.computeIfAbsent(fullClassName, key -> {
-            try {
-                return entityResolver.resolve(Class.forName(key));
-            } catch (ClassNotFoundException e) {
-                e.printStackTrace();
-                return null;
-            }
-        });
+    public static void setEntityResolver(EntityResolver entityResolver) {
+        singleInstance.entityResolver = entityResolver;
     }
+
 }

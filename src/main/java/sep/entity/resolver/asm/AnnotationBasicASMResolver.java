@@ -4,6 +4,7 @@ import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassWriter;
 import sep.entity.resolver.EntityResolver;
 import sep.entity.struct.entity.Entity;
+import sep.entity.struct.entity.EntityImpl;
 
 import java.io.IOException;
 
@@ -18,6 +19,6 @@ public class AnnotationBasicASMResolver implements EntityResolver {
             e.printStackTrace();
         }
         classReader.accept(classVistor, ClassWriter.COMPUTE_MAXS);
-        return new Entity(entityClass, classVistor.getTableName(), classVistor.getFields(), classVistor.getSupplier());
+        return new EntityImpl(entityClass, classVistor.getTableName(), classVistor.getFields(), classVistor.getSupplier());
     }
 }

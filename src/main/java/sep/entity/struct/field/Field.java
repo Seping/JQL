@@ -1,87 +1,79 @@
 package sep.entity.struct.field;
 
 import sep.entity.struct.entity.Entity;
-import sep.entity.struct.field.value.FieldValueGetter;
 import sep.jql.Attribute;
 
 import java.lang.invoke.*;
 import java.util.function.BiConsumer;
 import java.util.function.Supplier;
 
-public class Field {
+/**
+ * the abstraction of entity's field.
+ *
+ * @author Sep
+ * @param <E> the type of concrete entity
+ * @param <V> the type of field value
+ */
+public interface Field<E, V> {
 
-    private String columnName;
-    private Class type;
-    private String getterName;
-    private FieldValueGetter fieldValueGetter;
-    private BiConsumer fieldValueSetter;
-    private Supplier defaultValueSupplier;
+    /**
+     * Get the entity abstraction which it belongs.
+     */
+    Entity<E> getEntity();
 
-    public Field(String columnName) {
-        this.columnName = columnName;
-    }
+    /**
+     * Get the name of column which it maps.
+     */
+    String getColumnName();
 
-    public String getColumnNameWithQuote() {
-        return "`" + columnName + "`";
-    }
-    public String getColumnName() {
-        return columnName;
-    }
+    /**
+     * Get the type of value.
+     */
+    Class<V> getValueType();
 
-    public void setFieldValueGetter(FieldValueGetter fieldValueGetter) {
-        this.fieldValueGetter = fieldValueGetter;
-    }
-    public Object getValue(Object entity) {
-        return fieldValueGetter.getValue(entity);
-    }
+    /**
+     * Get the value of one concrete entity.
+     */
+    V getValue(E e);
 
-    public void setFieldValueSetter(BiConsumer fieldValueSetter) {
-        this.fieldValueSetter = fieldValueSetter;
-    }
-    public void setValue(Object t, Object value) {
-        fieldValueSetter.accept(t, value);
-    }
+    /**
+     * Set the value of this field of one concrete entity.
+     */
+    void setValue(E e, V v);
 
-    public Class getType() {
-        return type;
-    }
-    public void setType(Class type) {
-        this.type = type;
-    }
+    /**
+     * Get the corresponding {@code Attribute}.
+     */
+    Attribute<E> getAttribute();
 
-    public String getGetterName() {
-        return getterName;
-    }
-    public void setGetterName(String getterName) {
-        this.getterName = getterName;
-    }
+    /**
+     * Get the value using in update.
+     * If the return value is not null,
+     * then this return value will be used in the update statement
+     * instead of the value of the field itself.
+     */
+    V getUpdateValue();
 
-    public void setDefaultValueSupplier(Supplier supplier) {
-        this.defaultValueSupplier = supplier;
-    }
-    public Object getDefaultValue() {
-        return defaultValueSupplier == null ? null : defaultValueSupplier.get();
-    }
+    /**
+     * Get the value using in insert.
+     * If the return value is not null,
+     * then this return value will be used in the insert statement
+     * instead of the value of the field itself.
+     */
+    V getInsertValue();
 
-    public <T> Attribute<T> getAttribute(Entity<T> entity) {
-        MethodHandles.Lookup lookup = MethodHandles.lookup();
-        try {
-            MethodHandle getter = lookup.findVirtual(entity.getEntityClass(), this.getterName, MethodType.methodType(type));
-            MethodType invokedType = MethodType.methodType(Attribute.class);
-            CallSite callSite = LambdaMetafactory.altMetafactory(lookup,
-                    "get",
-                    invokedType,
-                    MethodType.methodType(Object.class, Object.class),
-                    getter,
-                    MethodType.methodType(Object.class, entity.getEntityClass()),
-                    LambdaMetafactory.FLAG_SERIALIZABLE);
-            MethodHandle factory = callSite.getTarget();
-            Attribute<T> attribute = (Attribute<T>) factory.invoke();
-            return attribute;
-        } catch (Throwable e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
+    /**
+     * Get the value using in query.
+     * Specify the value of the field to be equal
+     * to the return value when executing query.
+     */
+    V getQueryValue();
+
+    /**
+     * Get the value using in logically delete.
+     * Set the value of the field to the return value
+     * when executing logically delete.
+     */
+    V getTombstoneValue();
 
 }

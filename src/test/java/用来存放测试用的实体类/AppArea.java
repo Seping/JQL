@@ -1,20 +1,12 @@
 package 用来存放测试用的实体类;
 
-
-import org.hibernate.annotations.ColumnDefault;
-import org.hibernate.annotations.Generated;
-import org.hibernate.annotations.GenerationTime;
-import org.hibernate.annotations.Where;
 import sep.annotation.*;
+import sep.entity.struct.field.special.CreateTimestamp;
+import sep.entity.struct.field.special.UpdateTimestamp;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import java.sql.Timestamp;
 
-@Entity
 @Table(name = "app_area")
-@Where(clause = "sys_i_status != 1")
 public class AppArea {
     private Integer iId;
     private String vcName;
@@ -36,9 +28,7 @@ public class AppArea {
     private Integer sysIStatus;
     private String sysVcRemark;
 
-    @Id
-    @Column(name = "i_id")
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id(columnName = "i_id")
     public Integer getiId() {
         return iId;
     }
@@ -47,8 +37,7 @@ public class AppArea {
         this.iId = iId;
     }
 
-    @Basic
-    @Column(name = "vc_name")
+    @Column(columnName = "vc_name")
     public String getVcName() {
         return vcName;
     }
@@ -57,8 +46,7 @@ public class AppArea {
         this.vcName = vcName;
     }
 
-    @Basic
-    @Column(name = "vc_code")
+    @Column(columnName = "vc_code")
     public String getVcCode() {
         return vcCode;
     }
@@ -67,8 +55,7 @@ public class AppArea {
         this.vcCode = vcCode;
     }
 
-    @Basic
-    @Column(name = "i_order")
+    @Column(columnName = "i_order")
     public Integer getiOrder() {
         return iOrder;
     }
@@ -77,8 +64,7 @@ public class AppArea {
         this.iOrder = iOrder;
     }
 
-    @Basic
-    @Column(name = "i_pid")
+    @Column(columnName = "i_pid")
     public Integer getiPid() {
         return iPid;
     }
@@ -87,8 +73,7 @@ public class AppArea {
         this.iPid = iPid;
     }
 
-    @Basic
-    @Column(name = "d_longitude")
+    @Column(columnName = "d_longitude")
     public Double getdLongitude() {
         return dLongitude;
     }
@@ -97,8 +82,7 @@ public class AppArea {
         this.dLongitude = dLongitude;
     }
 
-    @Basic
-    @Column(name = "d_latitude")
+    @Column(columnName = "d_latitude")
     public Double getdLatitude() {
         return dLatitude;
     }
@@ -107,8 +91,7 @@ public class AppArea {
         this.dLatitude = dLatitude;
     }
 
-    @Basic
-    @Column(name = "vc_remark")
+    @Column(columnName = "vc_remark")
     public String getVcRemark() {
         return vcRemark;
     }
@@ -117,8 +100,7 @@ public class AppArea {
         this.vcRemark = vcRemark;
     }
 
-    @Basic
-    @Column(name = "i_extend1")
+    @Column(columnName = "i_extend1")
     public Integer getiExtend1() {
         return iExtend1;
     }
@@ -127,8 +109,7 @@ public class AppArea {
         this.iExtend1 = iExtend1;
     }
 
-    @Basic
-    @Column(name = "i_extend2")
+    @Column(columnName = "i_extend2")
     public Integer getiExtend2() {
         return iExtend2;
     }
@@ -137,8 +118,7 @@ public class AppArea {
         this.iExtend2 = iExtend2;
     }
 
-    @Basic
-    @Column(name = "vc_extend1")
+    @Column(columnName = "vc_extend1")
     public String getVcExtend1() {
         return vcExtend1;
     }
@@ -147,8 +127,7 @@ public class AppArea {
         this.vcExtend1 = vcExtend1;
     }
 
-    @Basic
-    @Column(name = "vc_extend2")
+    @Column(columnName = "vc_extend2")
     public String getVcExtend2() {
         return vcExtend2;
     }
@@ -157,8 +136,7 @@ public class AppArea {
         this.vcExtend2 = vcExtend2;
     }
 
-    @Basic
-    @Column(name = "vc_extend3")
+    @Column(columnName = "vc_extend3")
     public String getVcExtend3() {
         return vcExtend3;
     }
@@ -167,9 +145,8 @@ public class AppArea {
         this.vcExtend3 = vcExtend3;
     }
 
-    @Basic
-    @Column(name = "sys_dt_create")
-    @CreateTimestamp
+    @Column(columnName = "sys_dt_create",
+    field = CreateTimestamp.class)
     public Timestamp getSysDtCreate() {
         return sysDtCreate;
     }
@@ -178,8 +155,8 @@ public class AppArea {
         this.sysDtCreate = sysDtCreate;
     }
 
-    @Basic
-    @Column(name = "sys_i_create_user")
+    @Column(columnName = "sys_i_create_user",
+    field = CreateUser.class)
     public Integer getSysICreateUser() {
         return sysICreateUser;
     }
@@ -188,9 +165,8 @@ public class AppArea {
         this.sysICreateUser = sysICreateUser;
     }
 
-    @Basic
-    @Column(name = "sys_dt_last_update")
-    @UpdateTimestamp
+    @Column(columnName = "sys_dt_last_update",
+    field = UpdateTimestamp.class)
     public Timestamp getSysDtLastUpdate() {
         return sysDtLastUpdate;
     }
@@ -199,8 +175,8 @@ public class AppArea {
         this.sysDtLastUpdate = sysDtLastUpdate;
     }
 
-    @Basic
-    @Column(name = "sys_i_last_update_user")
+    @Column(columnName = "sys_i_last_update_user",
+    field = UpdateUser.class)
     public Integer getSysILastUpdateUser() {
         return sysILastUpdateUser;
     }
@@ -209,10 +185,10 @@ public class AppArea {
         this.sysILastUpdateUser = sysILastUpdateUser;
     }
 
-    @Basic
-    @Column(name = "sys_i_status")
-    @ColumnDefault(value = "0")
-    @Generated(GenerationTime.INSERT)
+    @Column(columnName = "sys_i_status",
+    insertValue = "0",
+    queryValue = "0",
+    tombstoneValue = "1")
     public Integer getSysIStatus() {
         return sysIStatus;
     }
@@ -221,8 +197,7 @@ public class AppArea {
         this.sysIStatus = sysIStatus;
     }
 
-    @Basic
-    @Column(name = "sys_vc_remark")
+    @Column(columnName = "sys_vc_remark")
     public String getSysVcRemark() {
         return sysVcRemark;
     }
