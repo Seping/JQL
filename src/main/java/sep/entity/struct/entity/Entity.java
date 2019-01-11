@@ -70,7 +70,7 @@ public class Entity<T> {
         return id;
     }
 
-    public Tombstone getTombstone() {
+    public Tombstone getTombstoneField() {
         if (tombstone == null) {
             tombstone = (Tombstone) fields.
                     stream()

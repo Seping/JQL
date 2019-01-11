@@ -3,8 +3,8 @@ package sep.jql.request;
 import sep.jql.ConjunctionBuilder;
 import sep.jql.OnSpecification;
 
-public abstract class OnRequest<T, R> {
+public abstract class OnRequest {
 
-    public abstract OnSpecification<T, R> request();
+    public abstract <T, R> void request(ConjunctionBuilder conjunctionBuilder);
 
 }
