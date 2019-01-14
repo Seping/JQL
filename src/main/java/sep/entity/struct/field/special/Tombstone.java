@@ -8,9 +8,6 @@ import sep.jql.Attribute;
 import java.util.function.BiConsumer;
 
 public class Tombstone<E> extends BasicField<E, Integer> {
-    public Tombstone(Entity<E> entity, String columnName, Attribute<E> attribute, BiConsumer<E, Integer> fieldValueSetter) {
-        super(entity, columnName, Integer.class, attribute, fieldValueSetter);
-    }
 
     @Override
     public Integer getInsertValue() {

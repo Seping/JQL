@@ -10,13 +10,12 @@ public class EntityImpl<T> implements Entity<T> {
 
     private Class<T> entityType;
     private String tableName;
-    private List<Field<T, ?>> fields;
+    private List<Field<T, ?>> fields = new ArrayList<>();
     private Supplier<T> newInstanceSupplier;
 
-    public EntityImpl(Class<T> entityType, String tableName, List<Field<T, ?>> fields, Supplier<T> newInstanceSupplier) {
+    public EntityImpl(Class<T> entityType, String tableName, Supplier<T> newInstanceSupplier) {
         this.entityType = entityType;
         this.tableName = tableName;
-        this.fields = fields;
         this.newInstanceSupplier = newInstanceSupplier;
     }
 

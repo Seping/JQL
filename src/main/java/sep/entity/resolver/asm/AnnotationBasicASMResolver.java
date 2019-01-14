@@ -11,7 +11,7 @@ import java.io.IOException;
 public class AnnotationBasicASMResolver implements EntityResolver {
 
     public Entity resolve(Class entityClass) {
-        EntityClassVisitor classVistor = new EntityClassVisitor();
+        EntityClassVisitor classVistor = new EntityClassVisitor(entityClass);
         ClassReader classReader = null;
         try {
             classReader = new ClassReader(entityClass.getName());
@@ -19,6 +19,6 @@ public class AnnotationBasicASMResolver implements EntityResolver {
             e.printStackTrace();
         }
         classReader.accept(classVistor, ClassWriter.COMPUTE_MAXS);
-        return new EntityImpl(entityClass, classVistor.getTableName(), classVistor.getFields(), classVistor.getSupplier());
+        return classVistor.getEntity();
     }
 }

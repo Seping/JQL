@@ -24,13 +24,13 @@ public class ArbitraryEntity implements Entity {
     }
 
     @Override
-    public Object newInstance() {
-        return entity.newInstance();
+    public void addField(Field field) {
+        entity.addField(field);
     }
 
     @Override
-    public void addField(Field field) {
-        entity.addField(field);
+    public Object newInstance() {
+        return entity.newInstance();
     }
 
     public void setEntity(Entity entity) {

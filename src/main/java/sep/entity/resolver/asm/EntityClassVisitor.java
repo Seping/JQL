@@ -2,11 +2,15 @@ package sep.entity.resolver.asm;
 
 import org.objectweb.asm.*;
 import sep.entity.struct.entity.Entity;
+import sep.entity.struct.entity.EntityImpl;
 import sep.entity.struct.field.Field;
+import sep.entity.struct.field.factory.FieldFactory;
 import sep.entity.struct.field.special.*;
-import sep.entity.struct.field.value.FieldValueGetter;
+import sep.jql.Attribute;
 
 import java.io.*;
+import java.lang.invoke.*;
+import java.lang.reflect.InvocationTargetException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -17,16 +21,25 @@ import java.util.function.Supplier;
 
 import static org.objectweb.asm.Opcodes.*;
 
-public class EntityClassVisitor extends ClassVisitor {
+public class EntityClassVisitor<T> extends ClassVisitor {
 
     private String internalEntityName;
+    private Class<T> entityClass;
 
     private String tableName;
-    private List<Field> fields = new ArrayList<>();
-    private Supplier supplier;
+    private Supplier<T> supplier;
+    private List<Field<T, ?>> fields = new ArrayList<>();
 
-    public EntityClassVisitor() {
+    private Entity<T> entity;
+
+    //Getter
+    public Entity<T> getEntity() {
+        return entity;
+    }
+
+    public EntityClassVisitor(Class<T> entityClass) {
         super(ASM4);
+        this.entityClass = entityClass;
     }
 
     @Override
@@ -36,10 +49,15 @@ public class EntityClassVisitor extends ClassVisitor {
 
     @Override
     public AnnotationVisitor visitAnnotation(String descriptor, boolean visible) {
-        //按@Table解析表名
         if (descriptor.equals("Lsep/annotation/Table;")) {
-            TableAnnotationVisitor tableAnnotationVisitor = new TableAnnotationVisitor();
-            return tableAnnotationVisitor;
+            return new AnnotationVisitor(ASM4) {
+                @Override
+                public void visit(String name, Object value) {
+                    if (name.equals("name")) {
+                        tableName = String.valueOf(value);
+                    }
+                }
+            };
         }
         else return super.visitAnnotation(descriptor, visible);
     }
@@ -47,84 +65,68 @@ public class EntityClassVisitor extends ClassVisitor {
     @Override
     public MethodVisitor visitMethod(int access, String name, String descriptor, String signature, String[] exceptions) {
         if (name.equals("<init>")) {
-            ClassWriter entitySuppierClassWriter = new ClassWriter(ASM4);
-            entitySuppierClassWriter.visit(V1_8,
-                    ACC_PUBLIC + ACC_SUPER,
-                    "sep/entity/struct/EntitySupplier$" + tableName,
-                    "Ljava/lang/Object;Ljava/util/function/Supplier<L" + internalEntityName +";>;",
-                    //null,
-                    "java/lang/Object",
-                    new String[]{"java/util/function/Supplier"});
-            MethodVisitor constructorVisitor = entitySuppierClassWriter.visitMethod(ACC_PUBLIC,
-                    "<init>",
-                    "()V",
-                    null,
-                    null);
-            constructorVisitor.visitMaxs(1, 2);
-            constructorVisitor.visitVarInsn(ALOAD, 0);
-            constructorVisitor.visitMethodInsn(INVOKESPECIAL,
-                    "java/lang/Object",
-                    "<init>",
-                    "()V",
-                    false);
-            constructorVisitor.visitInsn(RETURN);
-            constructorVisitor.visitEnd();
-            MethodVisitor getVisitor = entitySuppierClassWriter.visitMethod(ACC_PUBLIC,
-                    "get",
-                    "()Ljava/lang/Object;",
-                    null,
-                    null);
-            getVisitor.visitMaxs(2, 2);
-            getVisitor.visitTypeInsn(NEW, internalEntityName);
-            getVisitor.visitInsn(DUP);
-            getVisitor.visitMethodInsn(INVOKESPECIAL,
-                    internalEntityName,
-                    "<init>",
-                    "()V",
-                    false);
-            getVisitor.visitInsn(ARETURN);
-            getVisitor.visitEnd();
-            entitySuppierClassWriter.visitEnd();
-            byte[] b1 = entitySuppierClassWriter.toByteArray();
-            Class newEntitySupplierClass = new ClassLoader().defineClass("sep.entity.struct.EntitySupplier$" + tableName, b1);
-            try {
-                supplier = (Supplier) newEntitySupplierClass.getConstructor().newInstance();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+            supplier = createEntitySupplier();
+        } else if (name.startsWith("get")) {
+            return new FieldGetterVisitor(getFieldValueType(descriptor),
+                    createFieldValueSetter(name, descriptor),
+                    createFieldAttribute(name, descriptor));
         }
+        return super.visitMethod(access, name, descriptor, signature, exceptions);
+    }
 
-        if (name.startsWith("get")) {
-            try {
-                GetterVisitor getterVisitor = new GetterVisitor(name, createFieldValueGetter(name, descriptor), createFieldValueSetter(name, descriptor), getFieldValueClass(descriptor));
-                return getterVisitor;
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-
-            return super.visitMethod(access, name, descriptor, signature, exceptions);
-        } else {
-            return super.visitMethod(access, name, descriptor, signature, exceptions);
+    private Supplier<T> createEntitySupplier() {
+        ClassWriter entitySuppierClassWriter = new ClassWriter(ASM4);
+        entitySuppierClassWriter.visit(V1_8,
+                ACC_PUBLIC + ACC_SUPER,
+                "sep/entity/struct/EntitySupplier$" + tableName,
+                "Ljava/lang/Object;Ljava/util/function/Supplier<L" + internalEntityName +";>;",
+                "java/lang/Object",
+                new String[]{"java/util/function/Supplier"});
+        MethodVisitor constructorVisitor = entitySuppierClassWriter.visitMethod(ACC_PUBLIC,
+                "<init>",
+                "()V",
+                null,
+                null);
+        constructorVisitor.visitMaxs(1, 2);
+        constructorVisitor.visitVarInsn(ALOAD, 0);
+        constructorVisitor.visitMethodInsn(INVOKESPECIAL,
+                "java/lang/Object",
+                "<init>",
+                "()V",
+                false);
+        constructorVisitor.visitInsn(RETURN);
+        constructorVisitor.visitEnd();
+        MethodVisitor getVisitor = entitySuppierClassWriter.visitMethod(ACC_PUBLIC,
+                "get",
+                "()Ljava/lang/Object;",
+                null,
+                null);
+        getVisitor.visitMaxs(2, 2);
+        getVisitor.visitTypeInsn(NEW, internalEntityName);
+        getVisitor.visitInsn(DUP);
+        getVisitor.visitMethodInsn(INVOKESPECIAL,
+                internalEntityName,
+                "<init>",
+                "()V",
+                false);
+        getVisitor.visitInsn(ARETURN);
+        getVisitor.visitEnd();
+        entitySuppierClassWriter.visitEnd();
+        byte[] b = entitySuppierClassWriter.toByteArray();
+        Class newEntitySupplierClass = new ClassLoader().defineClass("sep.entity.struct.EntitySupplier$" + tableName, b);
+        try {
+            return (Supplier<T>) newEntitySupplierClass.getConstructor().newInstance();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
         }
     }
 
-    //Getter
-
-    public String getTableName() {
-        return tableName;
-    }
-
-    public List<Field> getFields() {
-        return fields;
-    }
-
-    public Supplier getSupplier() {
-        return supplier;
-    }
-
-    //private methods
-
-    private Class getFieldValueClass(String descriptor) {
+    /**
+     * @param descriptor the descriptor of {@code visitMethod()}.
+     *                   It's the internal name of the method's return type, something like "Ljava/lang/Integer;"
+     */
+    private Class<?> getFieldValueType(String descriptor) {
         try {
             return Class.forName(descriptor.replaceFirst("\\(\\)L", "").replaceAll(";", "").replaceAll("/", "."));
         } catch (ClassNotFoundException e) {
@@ -133,18 +135,17 @@ public class EntityClassVisitor extends ClassVisitor {
         return null;
     }
 
-    private BiConsumer createFieldValueSetter(String name, String descriptor) throws Exception {
+    private BiConsumer<T, ?> createFieldValueSetter(String name, String descriptor) {
         String paramInternalName = descriptor.replaceFirst("\\(\\)L", "").replaceAll(";", "");
         ClassWriter fieldValueSetterClassWriter = new ClassWriter(ASM4);
         fieldValueSetterClassWriter.visit(
                 V1_8,
                 ACC_PUBLIC + ACC_SUPER,
                 "sep/entity/struct/field/value/FieldValueSetter$" + tableName + "$" + name.replaceFirst("get", "set"),
-                null,
+                "Ljava/lang/Object;Ljava/util/function/BiConsumer<L" + internalEntityName +";" + paramInternalName + ">;",
                 "java/lang/Object",
                 new String[] {"java/util/function/BiConsumer"}
         );
-        //构造函数
         MethodVisitor constructorVisitor = fieldValueSetterClassWriter.visitMethod(ACC_PUBLIC,
                 "<init>",
                 "()V",
@@ -159,7 +160,6 @@ public class EntityClassVisitor extends ClassVisitor {
                 false);
         constructorVisitor.visitInsn(RETURN);
         constructorVisitor.visitEnd();
-        //
         MethodVisitor acceptVisitor = fieldValueSetterClassWriter.visitMethod(ACC_PUBLIC,
                 "accept",
                 "(Ljava/lang/Object;Ljava/lang/Object;)V",
@@ -198,107 +198,62 @@ public class EntityClassVisitor extends ClassVisitor {
         fieldValueSetterClassWriter.visitEnd();
         byte[] b = fieldValueSetterClassWriter.toByteArray();
         Class newFieldValueSetterClass = new ClassLoader().defineClass("sep.entity.struct.field.value.FieldValueSetter$" + tableName + "$" + name.replaceFirst("get", "set"), b);
-        BiConsumer biConsumer = (BiConsumer) newFieldValueSetterClass.getConstructor().newInstance();
-        return biConsumer;
+        try {
+            return (BiConsumer<T, ?>) newFieldValueSetterClass.getConstructor().newInstance();
+        } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
-    private FieldValueGetter createFieldValueGetter(String name, String descriptor) throws Exception {
-        //创建FieldValueGetter的子类
-        //类信息
-        ClassWriter fieldValueGetterClassWriter = new ClassWriter(ASM4);
-        fieldValueGetterClassWriter.visit(V1_8,
-                ACC_PUBLIC + ACC_SUPER,
-                FieldValueGetter.class.getName().replaceAll("\\.", "/") + "$" + tableName + "$" + name,
-                internalEntityName,
-                FieldValueGetter.class.getName().replaceAll("\\.", "/"),
-                null);
-        //构造函数
-        MethodVisitor constructorVisitor = fieldValueGetterClassWriter.visitMethod(ACC_PUBLIC,
-                "<init>",
-                "()V",
-                null,
-                null);
-        constructorVisitor.visitMaxs(1, 2);
-        constructorVisitor.visitVarInsn(ALOAD, 0);
-        constructorVisitor.visitMethodInsn(INVOKESPECIAL,
-                FieldValueGetter.class.getName().replaceAll("\\.", "/"),
-                "<init>",
-                "()V",
-                false);
-        constructorVisitor.visitInsn(RETURN);
-        constructorVisitor.visitEnd();
-        //子类getValue
-        MethodVisitor getValueVisitor = fieldValueGetterClassWriter.visitMethod(ACC_PUBLIC,
-                "getValue",
-                "(Ljava/lang/Object;)Ljava/lang/Object;",
-                null,
-                null);
-        getValueVisitor.visitMaxs(1, 2);
-        getValueVisitor.visitVarInsn(ALOAD, 1);
-        getValueVisitor.visitTypeInsn(CHECKCAST, internalEntityName);
-        getValueVisitor.visitMethodInsn(INVOKEVIRTUAL,
-                internalEntityName,
-                name,
-                descriptor,
-                false);
-        getValueVisitor.visitInsn(ARETURN);
-        getValueVisitor.visitEnd();
-        fieldValueGetterClassWriter.visitEnd();
-        byte[] b = fieldValueGetterClassWriter.toByteArray();
-        Class newFieldValueGetterClass = new ClassLoader().defineClass(FieldValueGetter.class.getName() + "$" + tableName + "$" + name, b);
-        FieldValueGetter fieldValueGetter = (FieldValueGetter) newFieldValueGetterClass.getConstructor().newInstance();
-        return fieldValueGetter;
+    private Attribute<T> createFieldAttribute(String name, String descriptor) {
+        MethodHandles.Lookup lookup = MethodHandles.lookup();
+        try {
+            Class<?> paramType = getFieldValueType(descriptor);
+            MethodHandle getter = lookup.findVirtual(entityClass, name, MethodType.methodType(paramType));
+            MethodType invokedType = MethodType.methodType(Attribute.class);
+            CallSite callSite = LambdaMetafactory.altMetafactory(lookup,
+                    "get",
+                    invokedType,
+                    MethodType.methodType(Object.class, Object.class),
+                    getter,
+                    MethodType.methodType(Object.class, entityClass),
+                    LambdaMetafactory.FLAG_SERIALIZABLE);
+            MethodHandle factory = callSite.getTarget();
+            Attribute<T> attribute = (Attribute<T>) factory.invoke();
+            return attribute;
+        } catch (Throwable e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
+    class FieldGetterVisitor extends MethodVisitor {
 
-    //-----------------------------------
-    //inner class
-    //-----------------------------------
+        Class<?> fieldValueType;
+        BiConsumer<T, ?> fieldValueSetter;
+        Attribute<T> fieldAttribute;
 
-    class TableAnnotationVisitor extends AnnotationVisitor {
+        Map<String, Object> annotationValues = new HashMap<>();
 
-        TableAnnotationVisitor() {
+        public FieldGetterVisitor(Class<?> fieldValueType,
+                BiConsumer<T, ?> fieldValueSetter,
+                Attribute<T> fieldAttribute) {
             super(ASM4);
-        }
-
-        @Override
-        public void visit(String name, Object value) {
-            if (name.equals("name")) {
-                tableName = String.valueOf(value);
-            }
-        }
-    }
-
-    class ClassLoader extends java.lang.ClassLoader {
-        public Class defineClass(String name, byte[] b) {
-            return defineClass(name, b, 0, b.length);
-        }
-    }
-
-    class GetterVisitor extends MethodVisitor {
-
-        private String getterName;
-        private FieldValueGetter fieldValueGetter;
-        private BiConsumer fieldValueSetter;
-        private Class fieldValueClass;
-
-        Map<String, Map<String, Object>> annotations = new HashMap<>();
-
-        GetterVisitor(String getterName, FieldValueGetter fieldValueGetter, BiConsumer fieldValueSetter, Class fieldValueClass) {
-            super(ASM4);
-            this.getterName = getterName;
-            this.fieldValueGetter = fieldValueGetter;
+            this.fieldValueType = fieldValueType;
             this.fieldValueSetter = fieldValueSetter;
-            this.fieldValueClass = fieldValueClass;
+            this.fieldAttribute = fieldAttribute;
         }
 
         @Override
-        public AnnotationVisitor visitAnnotation(String descriptor, final boolean visible) {
-            Map<String, Object> annotation = new HashMap<>();
-            annotations.put(descriptor, annotation);
-            if (descriptor.equals("Lsep/annotation/Column;")) {
-                ColumnAnnotationVisitor columnAnnotationVisitor = new ColumnAnnotationVisitor(annotation);
-                return columnAnnotationVisitor;
+        public AnnotationVisitor visitAnnotation(String descriptor, boolean visible) {
+            if (descriptor.equals("Lsep/annotation/Column;") || descriptor.equals("Lsep/annotation/Id;")) {
+                return new AnnotationVisitor(ASM4) {
+                    @Override
+                    public void visit(String name, Object value) {
+                        annotationValues.put(name, value);
+                    }
+                };
             } else {
                 return super.visitAnnotation(descriptor, visible);
             }
@@ -306,59 +261,144 @@ public class EntityClassVisitor extends ClassVisitor {
 
         @Override
         public void visitEnd() {
-            String columnName = String.valueOf(annotations.get("Lsep/annotation/Column;").get("name"));
-            Field field;
-            if (annotations.containsKey("Lsep/annotation/Id;")) {
-                field = new Id(columnName);
-            } else if (annotations.containsKey("Lsep/annotation/CreateTimestamp;")) {
-                field = new CreateTimestamp(columnName);
-                field.setDefaultValueSupplier(() -> new Timestamp(System.currentTimeMillis()));
-            } else if (annotations.containsKey("Lsep/annotation/UpdateTimestamp;")) {
-                field = new UpdateTimestamp(columnName);
-                field.setDefaultValueSupplier(() -> new Timestamp(System.currentTimeMillis()));
-            } else if (annotations.containsKey("Lsep/annotation/CreateUser;")) {
-                field = new CreateUser(columnName);
-            } else if (annotations.containsKey("Lsep/annotation/UpdateUser;")) {
-                field = new UpdateUser(columnName);
-            } else if (annotations.containsKey("Lsep/annotation/Tombstone;")) {
-                field = new Tombstone(columnName);
-                field.setDefaultValueSupplier(() -> 0);
-            } else {
-                field = new Field(columnName);
+            String fieldClassName = annotationValues.get("field") != null ?
+                    ((Type) annotationValues.get("field")).getClassName() : "sep.entity.struct.field.BasicField";
+            String fieldClassInternalName = fieldClassName.replaceAll("\\.", "/");
+            String columnName = annotationValues.get("columnName").toString();
+            String valueTypeInternalName = fieldValueType.getName().replaceAll("\\.", "/");
+
+            ClassWriter classWriter = new ClassWriter(ASM4);
+            classWriter.visit(V1_8,
+                    ACC_PUBLIC + ACC_SUPER,
+                    fieldClassInternalName + "$" + tableName + "$" + columnName,
+                    "Ljava/lang/Object;Ljava/util/function/Supplier<L" + internalEntityName +"; L"  + valueTypeInternalName + ";>;",
+                    fieldClassInternalName,
+                    null);
+            MethodVisitor constructorVisitor = classWriter.visitMethod(ACC_PUBLIC,
+                    "<init>",
+                    "()V",
+                    null,
+                    null);
+            constructorVisitor.visitMaxs(1, 2);
+            constructorVisitor.visitVarInsn(ALOAD, 0);
+            constructorVisitor.visitMethodInsn(INVOKESPECIAL,
+                    fieldClassInternalName,
+                    "<init>",
+                    "()V",
+                    false);
+            constructorVisitor.visitInsn(RETURN);
+            constructorVisitor.visitEnd();
+
+            String updateValue = (String) annotationValues.get("updateValue");
+            if (fieldClassName.equals("sep.entity.struct.field.BasicField") && updateValue != null) {
+                MethodVisitor updateValueVisitor = classWriter.visitMethod(ACC_PUBLIC,
+                        "getUpdateValue",
+                        "()L" + valueTypeInternalName + ";",
+                        null,
+                        null);
+                updateValueVisitor.visitMaxs(2, 1);
+                updateValueVisitor.visitLdcInsn(updateValue);
+                updateValueVisitor.visitLdcInsn(valueTypeInternalName);
+                updateValueVisitor.visitMethodInsn(INVOKESTATIC,
+                        "sep/util/SQLStringUtil",
+                        "stringToSQLValue",
+                        "(Ljava/lang/String;Ljava/lang/Class;)Ljava/lang/Object;",
+                        false);
+                updateValueVisitor.visitTypeInsn(CHECKCAST, valueTypeInternalName);
+                updateValueVisitor.visitInsn(ARETURN);
+                updateValueVisitor.visitEnd();
             }
-            field.setGetterName(getterName);
-            field.setFieldValueGetter(fieldValueGetter);
-            field.setFieldValueSetter(fieldValueSetter);
-            field.setType(fieldValueClass);
+
+            String insertValue = (String) annotationValues.get("insertValue");
+            if (fieldClassName.equals("sep.entity.struct.field.BasicField") && insertValue != null) {
+                MethodVisitor insertValueVisitor = classWriter.visitMethod(ACC_PUBLIC,
+                        "getInsertValue",
+                        "()L" + valueTypeInternalName + ";",
+                        null,
+                        null);
+                insertValueVisitor.visitMaxs(2, 1);
+                insertValueVisitor.visitLdcInsn(insertValue);
+                insertValueVisitor.visitLdcInsn(valueTypeInternalName);
+                insertValueVisitor.visitMethodInsn(INVOKESTATIC,
+                        "sep/util/SQLStringUtil",
+                        "stringToSQLValue",
+                        "(Ljava/lang/String;Ljava/lang/Class;)Ljava/lang/Object;",
+                        false);
+                insertValueVisitor.visitTypeInsn(CHECKCAST, valueTypeInternalName);
+                insertValueVisitor.visitInsn(ARETURN);
+                insertValueVisitor.visitEnd();
+            }
+
+            String queryValue = (String) annotationValues.get("queryValue");
+            if (fieldClassName.equals("sep.entity.struct.field.BasicField") && queryValue != null) {
+                MethodVisitor queryValueVisitor = classWriter.visitMethod(ACC_PUBLIC,
+                        "getQueryValue",
+                        "()L" + valueTypeInternalName + ";",
+                        null,
+                        null);
+                queryValueVisitor.visitMaxs(2, 1);
+                queryValueVisitor.visitLdcInsn(queryValue);
+                queryValueVisitor.visitLdcInsn(valueTypeInternalName);
+                queryValueVisitor.visitMethodInsn(INVOKESTATIC,
+                        "sep/util/SQLStringUtil",
+                        "stringToSQLValue",
+                        "(Ljava/lang/String;Ljava/lang/Class;)Ljava/lang/Object;",
+                        false);
+                queryValueVisitor.visitTypeInsn(CHECKCAST, valueTypeInternalName);
+                queryValueVisitor.visitInsn(ARETURN);
+                queryValueVisitor.visitEnd();
+            }
+
+            String tombstoneValue = (String) annotationValues.get("tombstoneValue");
+            if (fieldClassName.equals("sep.entity.struct.field.BasicField") && tombstoneValue != null) {
+                MethodVisitor tombstoneValueVisitor = classWriter.visitMethod(ACC_PUBLIC,
+                        "getTombstoneValue",
+                        "()L" + valueTypeInternalName + ";",
+                        null,
+                        null);
+                tombstoneValueVisitor.visitMaxs(2, 1);
+                tombstoneValueVisitor.visitLdcInsn(tombstoneValue);
+                tombstoneValueVisitor.visitLdcInsn(valueTypeInternalName);
+                tombstoneValueVisitor.visitMethodInsn(INVOKESTATIC,
+                        "sep/util/SQLStringUtil",
+                        "stringToSQLValue",
+                        "(Ljava/lang/String;Ljava/lang/Class;)Ljava/lang/Object;",
+                        false);
+                tombstoneValueVisitor.visitTypeInsn(CHECKCAST, valueTypeInternalName);
+                tombstoneValueVisitor.visitInsn(ARETURN);
+                tombstoneValueVisitor.visitEnd();
+            }
+
+            classWriter.visitEnd();
+            byte[] b = classWriter.toByteArray();
+            Class newFieldClass = new ClassLoader().defineClass(fieldClassName + "$" + tableName + "$" + columnName, b);
+            getFile(b, "G:\\JQL - io\\target\\test-classes", fieldClassName + "$" + tableName + "$" + columnName + ".class");
+            Field field = null;
+            try {
+                field = (Field) newFieldClass.getConstructor().newInstance();
+            } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
+                e.printStackTrace();
+            }
+
+            field.setValueType(fieldValueType);
+            field.setAttribute(fieldAttribute);
+            field.setColumnName(columnName);
+
             fields.add(field);
-            super.visitEnd();
         }
     }
 
-    class ColumnAnnotationVisitor extends AnnotationVisitor {
-
-        private Map<String, Object> annotation;
-
-        ColumnAnnotationVisitor(Map<String, Object> annotation) {
-            super(ASM4);
-            this.annotation = annotation;
-        }
-
-        @Override
-        public void visit(String name, Object value) {
-            annotation.put(name, value);
-            /*if (name.equals("name")) {
-                Field field = new Field(String.valueOf(value));
-                field.setGetterName(getterName);
-                field.setFieldValueGetter(fieldValueGetter);
-                field.setFieldValueSetter(fieldValueSetter);
-                field.setType(fieldValueClass);
-                fields.add(field);
-            }*/
+    @Override
+    public void visitEnd() {
+        entity = new EntityImpl<>(entityClass, tableName, supplier);
+        for (Field field : fields) {
+            field.setEntity(entity);
+            entity.addField(field);
         }
     }
 
-    public static void getFile(byte[] bfile, String filePath, String fileName) {
+    //Only for test
+    private static void getFile(byte[] bfile, String filePath, String fileName) {
         BufferedOutputStream bos = null;
         FileOutputStream fos = null;
         File file = null;

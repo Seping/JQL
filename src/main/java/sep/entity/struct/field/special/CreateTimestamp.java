@@ -9,9 +9,6 @@ import java.sql.Timestamp;
 import java.util.function.BiConsumer;
 
 public class CreateTimestamp<E> extends BasicField<E, Timestamp> {
-    public CreateTimestamp(Entity<E> entity, String columnName, Attribute<E> attribute, BiConsumer<E, Timestamp> fieldValueSetter) {
-        super(entity, columnName, Timestamp.class, attribute, fieldValueSetter);
-    }
 
     @Override
     public Timestamp getInsertValue() {

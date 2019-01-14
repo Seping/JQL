@@ -3,6 +3,7 @@ package sep.entity.struct.field;
 import sep.entity.struct.entity.Entity;
 import sep.jql.Attribute;
 
+import java.lang.invoke.*;
 import java.util.function.BiConsumer;
 
 public class BasicField<E, V> implements Field<E, V> {
@@ -14,12 +15,9 @@ public class BasicField<E, V> implements Field<E, V> {
     protected Attribute<E> attribute;
     protected BiConsumer<E, V> fieldValueSetter;
 
-    public BasicField(Entity<E> entity, String columnName, Class<V> valueType, Attribute<E> attribute, BiConsumer<E, V> fieldValueSetter) {
+    @Override
+    public void setEntity(Entity<E> entity) {
         this.entity = entity;
-        this.columnName = columnName;
-        this.valueType = valueType;
-        this.attribute = attribute;
-        this.fieldValueSetter = fieldValueSetter;
     }
 
     @Override
@@ -28,8 +26,18 @@ public class BasicField<E, V> implements Field<E, V> {
     }
 
     @Override
+    public void setColumnName(String columnName) {
+        this.columnName = columnName;
+    }
+
+    @Override
     public final String getColumnName() {
         return columnName;
+    }
+
+    @Override
+    public void setValueType(Class<V> valueType) {
+        this.valueType = valueType;
     }
 
     @Override
@@ -45,6 +53,11 @@ public class BasicField<E, V> implements Field<E, V> {
     @Override
     public final void setValue(E e, V v) {
         fieldValueSetter.accept(e, v);
+    }
+
+    @Override
+    public void setAttribute(Attribute<E> attribute) {
+        this.attribute = attribute;
     }
 
     @Override

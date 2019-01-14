@@ -2,7 +2,9 @@ package 用来存放测试用的实体类;
 
 import sep.annotation.*;
 import sep.entity.struct.field.special.CreateTimestamp;
+import sep.entity.struct.field.special.CreateUser;
 import sep.entity.struct.field.special.UpdateTimestamp;
+import sep.entity.struct.field.special.UpdateUser;
 
 import java.sql.Timestamp;
 

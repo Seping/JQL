@@ -17,14 +17,29 @@ import java.util.function.Supplier;
 public interface Field<E, V> {
 
     /**
+     * Set the entity abstraction which it belongs.
+     */
+    void setEntity(Entity<E> entity);
+
+    /**
      * Get the entity abstraction which it belongs.
      */
     Entity<E> getEntity();
 
     /**
+     * Set the name of column which it maps.
+     */
+    void setColumnName(String columnName);
+
+    /**
      * Get the name of column which it maps.
      */
     String getColumnName();
+
+    /**
+     * Set the type of value.
+     */
+    void setValueType(Class<V> valueType);
 
     /**
      * Get the type of value.
@@ -40,6 +55,11 @@ public interface Field<E, V> {
      * Set the value of this field of one concrete entity.
      */
     void setValue(E e, V v);
+
+    /**
+     * Set the corresponding {@code Attribute}.
+     */
+    void setAttribute(Attribute<E> attribute);
 
     /**
      * Get the corresponding {@code Attribute}.

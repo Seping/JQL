@@ -20,24 +20,15 @@ public class SQLStringUtil {
         return String.valueOf(object);
     }
 
-    public static String attribute2String(Attribute<?> attribute) {
-        SerializedLambda serializedLambda = attribute.serialized();
-        Entity entity = EntityRepository.getByClassName(serializedLambda.getImplClass().replaceAll("/", "."));
-        Field field1 = entity.getFieldByGetterName(serializedLambda.getImplMethodName());
-        String tableName1 = entity.getTableNameWithQuote();
-        String columnName1 = field1.getColumnNameWithQuote();
-        return tableName1 + "." + columnName1;
-    }
-
-    public static Object stringToSQLValue(String valueString, Class clazz) {
+    public static <T> T stringToSQLValue(String valueString, Class<T> clazz) {
         if (valueString == null) {
             return null;
         }
         if (clazz.equals(Integer.class)) {
-            return Integer.valueOf(valueString);
+            return (T) Integer.valueOf(valueString);
         }
         if (clazz.equals(String.class)) {
-            return valueString;
+            return (T) valueString;
         }
         return null;
     }

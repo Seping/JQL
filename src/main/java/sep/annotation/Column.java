@@ -26,7 +26,7 @@ public @interface Column {
      *
      * @see sep.entity.struct.field.Field
      */
-    Class field() default sep.entity.struct.field.Field.class;
+    Class field() default sep.entity.struct.field.BasicField.class;
 
     /**
      * Invalid when specifying the field class above. Replaced by the {@code getUpdateValue()} method of the field class.
