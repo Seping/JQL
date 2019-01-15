@@ -271,7 +271,7 @@ public class EntityClassVisitor<T> extends ClassVisitor {
             classWriter.visit(V1_8,
                     ACC_PUBLIC + ACC_SUPER,
                     fieldClassInternalName + "$" + tableName + "$" + columnName,
-                    "Ljava/lang/Object;Ljava/util/function/Supplier<L" + internalEntityName +"; L"  + valueTypeInternalName + ";>;",
+                    "L"+fieldClassInternalName+"<L" + internalEntityName +";L"  + valueTypeInternalName + ";>;",
                     fieldClassInternalName,
                     null);
             MethodVisitor constructorVisitor = classWriter.visitMethod(ACC_PUBLIC,
@@ -298,7 +298,7 @@ public class EntityClassVisitor<T> extends ClassVisitor {
                         null);
                 updateValueVisitor.visitMaxs(2, 1);
                 updateValueVisitor.visitLdcInsn(updateValue);
-                updateValueVisitor.visitLdcInsn(valueTypeInternalName);
+                updateValueVisitor.visitLdcInsn(Type.getType("L" + valueTypeInternalName + ";"));
                 updateValueVisitor.visitMethodInsn(INVOKESTATIC,
                         "sep/util/SQLStringUtil",
                         "stringToSQLValue",
@@ -307,6 +307,21 @@ public class EntityClassVisitor<T> extends ClassVisitor {
                 updateValueVisitor.visitTypeInsn(CHECKCAST, valueTypeInternalName);
                 updateValueVisitor.visitInsn(ARETURN);
                 updateValueVisitor.visitEnd();
+
+                MethodVisitor parentUpdateValueVisitor = classWriter.visitMethod(ACC_PUBLIC + ACC_BRIDGE + ACC_SYNTHETIC,
+                        "getUpdateValue",
+                        "()Ljava/lang/Object;",
+                        null,
+                        null);
+                parentUpdateValueVisitor.visitMaxs(1, 1);
+                parentUpdateValueVisitor.visitVarInsn(ALOAD, 0);
+                parentUpdateValueVisitor.visitMethodInsn(INVOKEVIRTUAL,
+                        fieldClassInternalName + "$" + tableName + "$" + columnName,
+                        "getUpdateValue",
+                        "()L" + valueTypeInternalName + ";",
+                        false);
+                parentUpdateValueVisitor.visitInsn(ARETURN);
+                parentUpdateValueVisitor.visitEnd();
             }
 
             String insertValue = (String) annotationValues.get("insertValue");
@@ -318,7 +333,7 @@ public class EntityClassVisitor<T> extends ClassVisitor {
                         null);
                 insertValueVisitor.visitMaxs(2, 1);
                 insertValueVisitor.visitLdcInsn(insertValue);
-                insertValueVisitor.visitLdcInsn(valueTypeInternalName);
+                insertValueVisitor.visitLdcInsn(Type.getType("L" + valueTypeInternalName + ";"));
                 insertValueVisitor.visitMethodInsn(INVOKESTATIC,
                         "sep/util/SQLStringUtil",
                         "stringToSQLValue",
@@ -327,6 +342,21 @@ public class EntityClassVisitor<T> extends ClassVisitor {
                 insertValueVisitor.visitTypeInsn(CHECKCAST, valueTypeInternalName);
                 insertValueVisitor.visitInsn(ARETURN);
                 insertValueVisitor.visitEnd();
+
+                MethodVisitor parentInsertValueVisitor = classWriter.visitMethod(ACC_PUBLIC + ACC_BRIDGE + ACC_SYNTHETIC,
+                        "getInsertValue",
+                        "()Ljava/lang/Object;",
+                        null,
+                        null);
+                parentInsertValueVisitor.visitMaxs(1, 1);
+                parentInsertValueVisitor.visitVarInsn(ALOAD, 0);
+                parentInsertValueVisitor.visitMethodInsn(INVOKEVIRTUAL,
+                        fieldClassInternalName + "$" + tableName + "$" + columnName,
+                        "getInsertValue",
+                        "()L" + valueTypeInternalName + ";",
+                        false);
+                parentInsertValueVisitor.visitInsn(ARETURN);
+                parentInsertValueVisitor.visitEnd();
             }
 
             String queryValue = (String) annotationValues.get("queryValue");
@@ -338,7 +368,7 @@ public class EntityClassVisitor<T> extends ClassVisitor {
                         null);
                 queryValueVisitor.visitMaxs(2, 1);
                 queryValueVisitor.visitLdcInsn(queryValue);
-                queryValueVisitor.visitLdcInsn(valueTypeInternalName);
+                queryValueVisitor.visitLdcInsn(Type.getType("L" + valueTypeInternalName + ";"));
                 queryValueVisitor.visitMethodInsn(INVOKESTATIC,
                         "sep/util/SQLStringUtil",
                         "stringToSQLValue",
@@ -347,6 +377,21 @@ public class EntityClassVisitor<T> extends ClassVisitor {
                 queryValueVisitor.visitTypeInsn(CHECKCAST, valueTypeInternalName);
                 queryValueVisitor.visitInsn(ARETURN);
                 queryValueVisitor.visitEnd();
+
+                MethodVisitor parentQueryValueVisitor = classWriter.visitMethod(ACC_PUBLIC + ACC_BRIDGE + ACC_SYNTHETIC,
+                        "getQueryValue",
+                        "()Ljava/lang/Object;",
+                        null,
+                        null);
+                parentQueryValueVisitor.visitMaxs(1, 1);
+                parentQueryValueVisitor.visitVarInsn(ALOAD, 0);
+                parentQueryValueVisitor.visitMethodInsn(INVOKEVIRTUAL,
+                        fieldClassInternalName + "$" + tableName + "$" + columnName,
+                        "getQueryValue",
+                        "()L" + valueTypeInternalName + ";",
+                        false);
+                parentQueryValueVisitor.visitInsn(ARETURN);
+                parentQueryValueVisitor.visitEnd();
             }
 
             String tombstoneValue = (String) annotationValues.get("tombstoneValue");
@@ -358,7 +403,7 @@ public class EntityClassVisitor<T> extends ClassVisitor {
                         null);
                 tombstoneValueVisitor.visitMaxs(2, 1);
                 tombstoneValueVisitor.visitLdcInsn(tombstoneValue);
-                tombstoneValueVisitor.visitLdcInsn(valueTypeInternalName);
+                tombstoneValueVisitor.visitLdcInsn(Type.getType("L" + valueTypeInternalName + ";"));
                 tombstoneValueVisitor.visitMethodInsn(INVOKESTATIC,
                         "sep/util/SQLStringUtil",
                         "stringToSQLValue",
@@ -367,12 +412,26 @@ public class EntityClassVisitor<T> extends ClassVisitor {
                 tombstoneValueVisitor.visitTypeInsn(CHECKCAST, valueTypeInternalName);
                 tombstoneValueVisitor.visitInsn(ARETURN);
                 tombstoneValueVisitor.visitEnd();
+
+                MethodVisitor parentTombstoneValueVisitor = classWriter.visitMethod(ACC_PUBLIC + ACC_BRIDGE + ACC_SYNTHETIC,
+                        "getTombstoneValue",
+                        "()Ljava/lang/Object;",
+                        null,
+                        null);
+                parentTombstoneValueVisitor.visitMaxs(1, 1);
+                parentTombstoneValueVisitor.visitVarInsn(ALOAD, 0);
+                parentTombstoneValueVisitor.visitMethodInsn(INVOKEVIRTUAL,
+                        fieldClassInternalName + "$" + tableName + "$" + columnName,
+                        "getTombstoneValue",
+                        "()L" + valueTypeInternalName + ";",
+                        false);
+                parentTombstoneValueVisitor.visitInsn(ARETURN);
+                parentTombstoneValueVisitor.visitEnd();
             }
 
             classWriter.visitEnd();
             byte[] b = classWriter.toByteArray();
             Class newFieldClass = new ClassLoader().defineClass(fieldClassName + "$" + tableName + "$" + columnName, b);
-            getFile(b, "G:\\JQL - io\\target\\test-classes", fieldClassName + "$" + tableName + "$" + columnName + ".class");
             Field field = null;
             try {
                 field = (Field) newFieldClass.getConstructor().newInstance();

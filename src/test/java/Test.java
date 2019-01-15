@@ -2,6 +2,7 @@
 import sep.entity.resolver.EntityRepository;
 import sep.entity.resolver.asm.AnnotationBasicASMResolver;
 import sep.entity.struct.entity.Entity;
+import sep.entity.struct.field.Field;
 import sep.jql.*;
 import 用来存放测试用的实体类.*;
 
@@ -21,7 +22,9 @@ public class Test {
         a.setSysIStatus(0);
 
         Entity<AppArea> entity = new AnnotationBasicASMResolver().resolve(AppArea.class);
-        System.out.println(entity.getFields().get(17).getTombstoneValue());
+        Field sysistatus = entity.getFields().get(17);
+        System.out.println(sysistatus.getColumnName());
+        System.out.println(sysistatus.getTombstoneValue());
     }
 
 }
