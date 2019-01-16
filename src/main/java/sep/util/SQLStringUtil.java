@@ -1,11 +1,7 @@
 package sep.util;
 
-import sep.entity.resolver.EntityRepository;
-import sep.entity.struct.entity.Entity;
 import sep.entity.struct.field.Field;
-import sep.jql.Attribute;
 
-import java.lang.invoke.SerializedLambda;
 import java.util.Collection;
 
 public class SQLStringUtil {

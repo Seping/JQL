@@ -4,14 +4,11 @@ import org.objectweb.asm.*;
 import sep.entity.struct.entity.Entity;
 import sep.entity.struct.entity.EntityImpl;
 import sep.entity.struct.field.Field;
-import sep.entity.struct.field.factory.FieldFactory;
-import sep.entity.struct.field.special.*;
-import sep.jql.Attribute;
+import sep.entity.struct.field.Attribute;
 
 import java.io.*;
 import java.lang.invoke.*;
 import java.lang.reflect.InvocationTargetException;
-import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;

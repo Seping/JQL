@@ -1,9 +1,7 @@
 package sep.entity.struct.field;
 
 import sep.entity.struct.entity.Entity;
-import sep.jql.Attribute;
 
-import java.lang.invoke.*;
 import java.util.function.BiConsumer;
 
 public class BasicField<E, V> implements Field<E, V> {

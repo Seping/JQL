@@ -1,11 +1,6 @@
 package sep.entity.struct.field;
 
 import sep.entity.struct.entity.Entity;
-import sep.jql.Attribute;
-
-import java.lang.invoke.*;
-import java.util.function.BiConsumer;
-import java.util.function.Supplier;
 
 /**
  * the abstraction of entity's field.
