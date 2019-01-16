@@ -40,7 +40,21 @@ public class EntityImpl<T> implements Entity<T> {
     }
 
     @Override
+    public Field<T, ?> getFieldByAttributeName(String attributeName) {
+        return fields
+                .stream()
+                .filter(field -> field.getAttributeName().equals(attributeName))
+                .findFirst()
+                .get();
+    }
+
+    @Override
     public T newInstance() {
         return newInstanceSupplier.get();
+    }
+
+    @Override
+    public String toSQLString() {
+        return "`" + tableName + "`";
     }
 }

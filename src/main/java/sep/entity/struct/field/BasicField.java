@@ -9,6 +9,7 @@ public class BasicField<E, V> implements Field<E, V> {
     protected Entity<E> entity;
     protected String columnName;
     protected Class<V> valueType;
+    protected String attributeName;
 
     protected Attribute<E> attribute;
     protected BiConsumer<E, V> fieldValueSetter;
@@ -64,6 +65,16 @@ public class BasicField<E, V> implements Field<E, V> {
     }
 
     @Override
+    public void setAttributeName(String attributeName) {
+        this.attributeName = attributeName;
+    }
+
+    @Override
+    public String getAttributeName() {
+        return attributeName;
+    }
+
+    @Override
     public V getUpdateValue() {
         return null;
     }
@@ -81,5 +92,10 @@ public class BasicField<E, V> implements Field<E, V> {
     @Override
     public V getTombstoneValue() {
         return null;
+    }
+
+    @Override
+    public String toSQLString() {
+        return "`" + columnName + "`";
     }
 }

@@ -66,7 +66,8 @@ public class EntityClassVisitor<T> extends ClassVisitor {
         } else if (name.startsWith("get")) {
             return new FieldGetterVisitor(getFieldValueType(descriptor),
                     createFieldValueSetter(name, descriptor),
-                    createFieldAttribute(name, descriptor));
+                    createFieldAttribute(name, descriptor),
+                    name);
         }
         return super.visitMethod(access, name, descriptor, signature, exceptions);
     }
@@ -230,16 +231,19 @@ public class EntityClassVisitor<T> extends ClassVisitor {
         Class<?> fieldValueType;
         BiConsumer<T, ?> fieldValueSetter;
         Attribute<T> fieldAttribute;
+        String attributeName;
 
         Map<String, Object> annotationValues = new HashMap<>();
 
         public FieldGetterVisitor(Class<?> fieldValueType,
                 BiConsumer<T, ?> fieldValueSetter,
-                Attribute<T> fieldAttribute) {
+                Attribute<T> fieldAttribute,
+                String attributeName) {
             super(ASM4);
             this.fieldValueType = fieldValueType;
             this.fieldValueSetter = fieldValueSetter;
             this.fieldAttribute = fieldAttribute;
+            this.attributeName = attributeName;
         }
 
         @Override
@@ -439,6 +443,7 @@ public class EntityClassVisitor<T> extends ClassVisitor {
             field.setValueType(fieldValueType);
             field.setAttribute(fieldAttribute);
             field.setColumnName(columnName);
+            field.setAttributeName(attributeName);
 
             fields.add(field);
         }

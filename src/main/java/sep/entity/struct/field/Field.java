@@ -1,6 +1,7 @@
 package sep.entity.struct.field;
 
 import sep.entity.struct.entity.Entity;
+import sep.sql.SQLConvertible;
 
 /**
  * the abstraction of entity's field.
@@ -9,7 +10,7 @@ import sep.entity.struct.entity.Entity;
  * @param <E> the type of concrete entity
  * @param <V> the type of field value
  */
-public interface Field<E, V> {
+public interface Field<E, V> extends SQLConvertible {
 
     /**
      * Set the entity abstraction which it belongs.
@@ -60,6 +61,16 @@ public interface Field<E, V> {
      * Get the corresponding {@code Attribute}.
      */
     Attribute<E> getAttribute();
+
+    /**
+     * Set the name of corresponding {@code Attribute}.
+     */
+    void setAttributeName(String attributeName);
+
+    /**
+     * Get the name of corresponding {@code Attribute}.
+     */
+    String getAttributeName();
 
     /**
      * Get the value using in update.

@@ -21,6 +21,17 @@ public final class EntityRepository {
         return entity;
     }
 
+    public static Entity<?> getEntityByClassName(String className) {
+        Class<?> entityType = null;
+        try {
+            entityType = Class.forName(className);
+            return getEntity(entityType);
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
     private static EntityRepository getInstance() {
         if (singleInstance == null) {
             singleInstance = new EntityRepository();

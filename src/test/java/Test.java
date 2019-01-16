@@ -2,6 +2,7 @@
 import sep.entity.resolver.EntityRepository;
 import sep.entity.resolver.asm.AnnotationBasicASMResolver;
 import sep.entity.struct.entity.Entity;
+import sep.entity.struct.field.Attribute;
 import sep.entity.struct.field.Field;
 import sep.jql.*;
 import 用来存放测试用的实体类.*;
@@ -25,6 +26,9 @@ public class Test {
         Field sysistatus = entity.getFields().get(17);
         System.out.println(sysistatus.getColumnName());
         System.out.println(sysistatus.getTombstoneValue());
+
+        Attribute<AppArea> attribute = AppArea::getSysIStatus;
+        System.out.println(sysistatus.getAttribute().equals(attribute));
     }
 
 }
