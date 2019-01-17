@@ -1,11 +1,10 @@
 package sep.jql.able;
 
+import sep.jql.condition.DoubleAttributeSpecification;
 import sep.sql.SQLConvertible;
 
 public interface Onable<M, A, B> extends SQLConvertible {
 
-    interface On<M, C, D> extends Whereable<M>, Joinable<M> {
-
-    }
+    On<M, A, B> on(DoubleAttributeSpecification<A, B> doubleAttributeSpecification);
 
 }

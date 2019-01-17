@@ -4,42 +4,40 @@ import sep.entity.struct.field.Attribute;
 import sep.jql.able.*;
 import sep.jql.condition.SingleAttributeSpecification;
 
-import java.util.ArrayList;
+public class JQL<M> extends SQLConvertibleChain implements SingleJoinable<M>, Whereable<M> {
 
-public class JQL<T> implements Joinable<T>, Whereable<T> {
+    Class<M> mainClass;
 
-    Class<T> mainClass;
-
-    private JQL(Class<T> mainClass) {
+    private JQL(Class<M> mainClass) {
         this.mainClass = mainClass;
     }
 
-    public static <T> JQL<T> from(Class<T> fromClass) {
+    public static <M> JQL<M> from(Class<M> fromClass) {
         return new JQL<>(fromClass);
     }
 
     @Override
-    public <A, B> Onable<T, A, B> join(Class<A> rootClass, Class<B> joinClass) {
-        return null;
+    public <B> Onable<M, M, B> join(Class<B> joinClass) {
+        return setNextAndReturn(new JQLJoin<>(mainClass, joinClass));
     }
 
     @Override
-    public OrderByable<T> where(SingleAttributeSpecification<T> singleAttributeSpecification) {
-        return null;
+    public OrderByable<M> where(SingleAttributeSpecification<M> singleAttributeSpecification) {
+        return setNextAndReturn(new JQLWhere<>(singleAttributeSpecification));
     }
 
     @Override
-    public Limitable<T> orderBy(Attribute<T> attribute) {
-        return null;
+    public Limitable<M> orderBy(Attribute<M> attribute) {
+        return setNextAndReturn(new JQLOrderBy<>(attribute));
     }
 
     @Override
-    public Limit<T> limit(Integer offset, Integer rowCount) {
-        return null;
+    public Limit<M> limit(Integer offset, Integer rowCount) {
+        return setNextAndReturn(new JQLLimit<>(offset, rowCount));
     }
 
     @Override
-    public JQLStatement<T> end() {
+    public JQLStatement<M> end() {
         return null;
     }
 

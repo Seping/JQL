@@ -1,27 +1,20 @@
 package sep.jql.condition;
 
 import sep.entity.struct.field.Attribute;
+import sep.sql.SQLConvertible;
 
-public interface ConditionChain {
+public interface ConditionChain extends SQLConvertible {
 
-    Conjunction equal(Attribute<?> leftAttribute, Object rightAttributre, ComparisonOperator operator);
+    ConditionConjunction equal(Attribute<?> leftAttribute, Object rightAttribute);
 
-    Conjunction notEqual(Attribute<?> leftAttribute, Object rightAttributre, ComparisonOperator operator);
+    ConditionConjunction notEqual(Attribute<?> leftAttribute, Object rightAttribute);
 
-    Conjunction greater(Attribute<?> leftAttribute, Object rightAttributre, ComparisonOperator operator);
+    ConditionConjunction greater(Attribute<?> leftAttribute, Object rightAttribute);
 
-    Conjunction greaterOrEqual(Attribute<?> leftAttribute, Object rightAttributre, ComparisonOperator operator);
+    ConditionConjunction greaterOrEqual(Attribute<?> leftAttribute, Object rightAttribute);
 
-    Conjunction less(Attribute<?> leftAttribute, Object rightAttributre, ComparisonOperator operator);
+    ConditionConjunction less(Attribute<?> leftAttribute, Object rightAttribute);
 
-    Conjunction lessOrEqual(Attribute<?> leftAttribute, Object rightAttributre, ComparisonOperator operator);
-
-    interface Conjunction {
-
-        ConditionChain and();
-
-        ConditionChain or();
-
-    }
+    ConditionConjunction lessOrEqual(Attribute<?> leftAttribute, Object rightAttribute);
 
 }

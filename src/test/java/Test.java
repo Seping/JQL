@@ -19,16 +19,23 @@ public class Test {
     @org.junit.Test
     public void test() {
 
-        AppArea a = new AppArea();
-        a.setSysIStatus(0);
-
-        Entity<AppArea> entity = new AnnotationBasicASMResolver().resolve(AppArea.class);
-        Field sysistatus = entity.getFields().get(17);
-        System.out.println(sysistatus.getColumnName());
-        System.out.println(sysistatus.getTombstoneValue());
-
-        Attribute<AppArea> attribute = AppArea::getSysIStatus;
-        System.out.println(sysistatus.getAttribute().equals(attribute));
+        JQL.from(AppDbMaterial.class)
+                .join(AppDbMaterialAddress.class)
+                .on((root1, root2, conditionChain) -> {
+                    return conditionChain
+                            .equal(root1.getAttribute(AppDbMaterial::getiMaterialAddressId), root2.getAttribute(AppDbMaterialAddress::getiId))
+                            .and()
+                            .equal(root1.getAttribute(AppDbMaterial::getVcName), root2.getAttribute(AppDbMaterialAddress::getVcName));
+                })
+                .join(AppDbMaterialAddress.class, AppArea.class)
+                .on((root1, root2, conditionChain) -> {
+                    return conditionChain
+                            .equal(root1.getAttribute(AppDbMaterialAddress::getiAreaId), root2.getAttribute(AppArea::getiId));
+                })
+                .where((root1, conditionChain) -> {
+                    return conditionChain
+                            .equal(root1.getAttribute(AppDbMaterial::getiNumber), 1);
+                })
     }
 
 }
