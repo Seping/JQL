@@ -1,5 +1,6 @@
 package sep.entity.struct.entity;
 
+import sep.entity.struct.field.Attribute;
 import sep.entity.struct.field.Field;
 
 import java.util.ArrayList;
@@ -46,6 +47,16 @@ public class EntityImpl<T> implements Entity<T> {
                 .filter(field -> field.getAttributeName().equals(attributeName))
                 .findFirst()
                 .get();
+    }
+
+    @Override
+    public Attribute<T> getAttribute(Attribute<T> attribute) {
+        return attribute;
+    }
+
+    @Override
+    public Attribute<T> getAttributeByName(String attributeName) {
+        return getFieldByAttributeName(attributeName).getAttribute();
     }
 
     @Override

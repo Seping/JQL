@@ -5,8 +5,10 @@ import sep.sql.SQLConvertible;
 
 public interface Condition<T> extends SQLConvertible {
 
-    ConditionChain and();
+    Attribute<T> getLeftAttribute();
 
-    ConditionChain or();
+    Object getRightAttribute();
+
+
 
 }
