@@ -1,8 +1,12 @@
 package sep.jql;
 
+import sep.entity.struct.entity.Entity;
 import sep.entity.struct.field.Attribute;
 import sep.jql.able.*;
 import sep.jql.condition.SingleAttributeSpecification;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class JQL<M> extends SQLConvertibleChain implements SingleJoinable<M>, Whereable<M> {
 
@@ -43,6 +47,14 @@ public class JQL<M> extends SQLConvertibleChain implements SingleJoinable<M>, Wh
 
     @Override
     public String toSQLString() {
-        return null;
+
+    }
+
+    private List<Entity<?>> getEntities() {
+        List<Entity<?>> entities = new ArrayList<>();
+
+        for (SQLConvertibleChain chain = this;
+        chain instanceof JQLJoin;
+        )
     }
 }

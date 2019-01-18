@@ -18,6 +18,6 @@ public enum JQLComparisionOperator implements ComparisonOperator {
 
     @Override
     public String toSQLString() {
-        return null;
+        return operator;
     }
 }

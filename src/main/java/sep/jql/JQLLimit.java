@@ -2,7 +2,7 @@ package sep.jql;
 
 import sep.jql.able.Limit;
 
-public class JQLLimit<M> implements Limit<M> {
+public class JQLLimit<M> extends SQLConvertibleChain implements Limit<M> {
 
     Integer offset;
     Integer rowCount;

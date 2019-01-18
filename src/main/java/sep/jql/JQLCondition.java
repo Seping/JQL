@@ -3,6 +3,7 @@ package sep.jql;
 import sep.entity.struct.field.Attribute;
 import sep.jql.condition.ComparisonOperator;
 import sep.jql.condition.Condition;
+import sep.util.SQLStringUtil;
 
 public class JQLCondition<T> implements Condition<T> {
 
@@ -28,6 +29,6 @@ public class JQLCondition<T> implements Condition<T> {
 
     @Override
     public String toSQLString() {
-        return null;
+        return leftAttribute.toSQLString() + " " + comparisonOperator.toSQLString() + " " + SQLStringUtil.toSQLValueString(rightAttribute);
     }
 }

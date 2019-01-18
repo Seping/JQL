@@ -2,13 +2,17 @@ package sep.jql;
 
 import sep.sql.SQLConvertible;
 
-public abstract class SQLConvertibleChain {
+public abstract class SQLConvertibleChain implements SQLConvertible {
 
-    SQLConvertible next;
+    SQLConvertibleChain next;
 
-    protected <T extends SQLConvertible> T setNextAndReturn(T sqlConvertible) {
-        next = sqlConvertible;
+    protected <T extends SQLConvertibleChain> T setNextAndReturn(T sqlConvertibleChain) {
+        next = sqlConvertibleChain;
         return (T) next;
+    }
+
+    public String toSQLStringChain() {
+        return next == null ? this.toSQLString() : this.toSQLString() + this.next.toSQLString();
     }
 
 }
