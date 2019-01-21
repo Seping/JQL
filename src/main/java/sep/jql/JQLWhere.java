@@ -11,7 +11,7 @@ import sep.jql.condition.SingleAttributeSpecification;
 
 public class JQLWhere<M> extends SQLConvertibleChain implements OrderByable<M> {
 
-    ConditionChain conditionChain;
+    JQLConditionChain conditionChain;
 
     public JQLWhere(SingleAttributeSpecification<M> singleAttributeSpecification) {
         Root<M> root = new Root<>();
@@ -36,6 +36,6 @@ public class JQLWhere<M> extends SQLConvertibleChain implements OrderByable<M> {
 
     @Override
     public String toSQLString() {
-        return null;
+        return "\r\nWHERE " + conditionChain.toSQLStringChain();
     }
 }

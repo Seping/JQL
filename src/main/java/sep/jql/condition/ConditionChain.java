@@ -1,6 +1,7 @@
 package sep.jql.condition;
 
 import sep.entity.struct.field.Attribute;
+import sep.jql.SQLConvertibleChain;
 import sep.sql.SQLConvertible;
 
 public interface ConditionChain extends SQLConvertible {

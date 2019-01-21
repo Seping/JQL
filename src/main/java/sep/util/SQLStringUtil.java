@@ -1,5 +1,6 @@
 package sep.util;
 
+import sep.entity.struct.field.Attribute;
 import sep.entity.struct.field.Field;
 
 import java.util.Collection;
@@ -9,6 +10,9 @@ public class SQLStringUtil {
     public static String toSQLValueString(Object object) {
         if (object == null) {
             return "NULL";
+        }
+        if (object instanceof Attribute) {
+            return ((Attribute) object).toSQLString();
         }
         if (object instanceof String) {
             return "'" + object + "'";

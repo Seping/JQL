@@ -18,12 +18,7 @@ public class JQLOrderBy<M> extends SQLConvertibleChain implements Limitable<M> {
     }
 
     @Override
-    public JQLStatement<M> end() {
-        return null;
-    }
-
-    @Override
     public String toSQLString() {
-        return null;
+        return "\r\nORDER BY " + attribute.toSQLString();
     }
 }

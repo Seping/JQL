@@ -19,7 +19,9 @@ public class Test {
     @org.junit.Test
     public void test() {
 
-        JQL.from(AppDbMaterial.class)
+        JQL<AppDbMaterial> jql = JQL.from(AppDbMaterial.class);
+
+        jql
                 .join(AppDbMaterialAddress.class)
                 .on((root1, root2, conditionChain) -> {
                     return conditionChain
@@ -36,6 +38,11 @@ public class Test {
                     return conditionChain
                             .equal(root1.getAttribute(AppDbMaterial::getiNumber), 1);
                 })
+                .orderBy(AppDbMaterial::getDtQuaguaPeriod)
+                .limit(0, 1);
+
+        String s = jql.toSQLStringChain();
+        System.out.println(s);
     }
 
 }

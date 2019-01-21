@@ -1,5 +1,6 @@
 package sep.jql;
 
+import sep.entity.resolver.EntityRepository;
 import sep.jql.able.On;
 import sep.jql.able.Onable;
 import sep.jql.condition.DoubleAttributeSpecification;
@@ -22,7 +23,7 @@ public class JQLJoin<M, A, B> extends SQLConvertibleChain implements Onable<M, A
 
     @Override
     public String toSQLString() {
-        return null;
+        return "\r\n\tLEFT JOIN " + EntityRepository.getEntity(joinClass).toSQLString();
     }
 
 

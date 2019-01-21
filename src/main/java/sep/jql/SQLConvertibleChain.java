@@ -12,7 +12,7 @@ public abstract class SQLConvertibleChain implements SQLConvertible {
     }
 
     public String toSQLStringChain() {
-        return next == null ? this.toSQLString() : this.toSQLString() + this.next.toSQLString();
+        return next == null ? this.toSQLString() : this.toSQLString() + this.next.toSQLStringChain();
     }
 
 }

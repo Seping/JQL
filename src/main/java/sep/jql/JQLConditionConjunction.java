@@ -22,6 +22,6 @@ public class JQLConditionConjunction extends SQLConvertibleChain implements Cond
 
     @Override
     public String toSQLString() {
-        return null;
+        return logicalOperator == null ? "" : "\r\n\t\t" + logicalOperator.toSQLString() + " ";
     }
 }

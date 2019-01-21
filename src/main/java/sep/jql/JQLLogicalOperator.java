@@ -3,8 +3,8 @@ package sep.jql;
 import sep.jql.condition.LogicalOperator;
 
 public enum JQLLogicalOperator implements LogicalOperator {
-    AND("&&"),
-    OR("||");
+    AND("AND"),
+    OR("OR");
 
     private String operator;
     JQLLogicalOperator(String operator){
@@ -13,6 +13,6 @@ public enum JQLLogicalOperator implements LogicalOperator {
 
     @Override
     public String toSQLString() {
-        return null;
+        return operator;
     }
 }

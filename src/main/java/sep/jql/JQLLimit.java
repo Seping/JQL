@@ -13,12 +13,7 @@ public class JQLLimit<M> extends SQLConvertibleChain implements Limit<M> {
     }
 
     @Override
-    public JQLStatement<M> end() {
-        return null;
-    }
-
-    @Override
     public String toSQLString() {
-        return null;
+        return "\r\nLIMIT " + offset + ", " + rowCount;
     }
 }

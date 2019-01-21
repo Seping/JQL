@@ -52,6 +52,6 @@ public class JQLConditionChain extends SQLConvertibleChain implements ConditionC
 
     @Override
     public String toSQLString() {
-        return null;
+        return condition.toSQLString();
     }
 }

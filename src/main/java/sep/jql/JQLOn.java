@@ -11,7 +11,7 @@ public class JQLOn<M, A, B> extends SQLConvertibleChain implements On<M, A, B> {
 
     Class<A> rootClass;
     Class<B> joinClass;
-    ConditionChain conditionChain;
+    JQLConditionChain conditionChain;
 
     public JQLOn(Class<A> rootClass, Class<B> joinClass, DoubleAttributeSpecification<A, B> doubleAttributeSpecification) {
         this.rootClass = rootClass;
@@ -51,6 +51,6 @@ public class JQLOn<M, A, B> extends SQLConvertibleChain implements On<M, A, B> {
 
     @Override
     public String toSQLString() {
-        return null;
+        return "\r\n\tON " + conditionChain.toSQLStringChain();
     }
 }
