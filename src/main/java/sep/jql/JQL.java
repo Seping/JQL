@@ -5,15 +5,16 @@ import sep.entity.struct.entity.Entity;
 import sep.entity.struct.field.Attribute;
 import sep.entity.struct.field.Field;
 import sep.jql.able.*;
+import sep.jql.component.Limit;
 import sep.jql.condition.SingleAttributeSpecification;
+import sep.jql.statement.Statement;
 
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-public class JQL<M> extends SQLConvertibleChain implements SingleJoinable<M>, Whereable<M> {
+public class JQL<M> extends SQLConvertibleChain implements SingleJoinable<M>, Whereable<M>, Endable<M> {
 
     Class<M> mainClass;
 
@@ -87,5 +88,10 @@ public class JQL<M> extends SQLConvertibleChain implements SingleJoinable<M>, Wh
                 .collect(Collectors.toList());
 
         return entities;
+    }
+
+    @Override
+    public Statement<M> end() {
+        return null;
     }
 }

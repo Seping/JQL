@@ -3,7 +3,8 @@ package sep.jql;
 import sep.entity.struct.field.Attribute;
 import sep.entity.struct.field.Root;
 import sep.jql.able.*;
-import sep.jql.condition.ConditionChain;
+import sep.jql.component.Limit;
+import sep.jql.component.On;
 import sep.jql.condition.DoubleAttributeSpecification;
 import sep.jql.condition.SingleAttributeSpecification;
 
@@ -42,11 +43,6 @@ public class JQLOn<M, A, B> extends SQLConvertibleChain implements On<M, A, B> {
     @Override
     public Limit<M> limit(Integer offset, Integer rowCount) {
         return setNextAndReturn(new JQLLimit<>(offset, rowCount));
-    }
-
-    @Override
-    public JQLStatement<M> end() {
-        return null;
     }
 
     @Override

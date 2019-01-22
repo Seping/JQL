@@ -1,7 +1,7 @@
 package sep.jql;
 
 import sep.entity.struct.field.Attribute;
-import sep.jql.able.Limit;
+import sep.jql.component.Limit;
 import sep.jql.able.Limitable;
 
 public class JQLOrderBy<M> extends SQLConvertibleChain implements Limitable<M> {

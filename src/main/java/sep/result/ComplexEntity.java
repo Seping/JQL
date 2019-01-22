@@ -7,9 +7,7 @@ public interface ComplexEntity<T> {
 
     T getMainEntity();
 
-    List<?> getJoinEntities(Class<?> type);
-
-    List<ComplexEntity<?>> getJoinComplexEntities(Class<?> type);
+    <R> List<R> getJoinEntities(Class<R> type);
 
     Set<Class<?>> getJoinTypes();
 

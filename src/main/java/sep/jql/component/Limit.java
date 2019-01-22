@@ -1,4 +1,4 @@
-package sep.jql.able;
+package sep.jql.component;
 
 import sep.sql.SQLConvertible;
 

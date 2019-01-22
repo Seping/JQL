@@ -2,11 +2,8 @@ package sep.jql;
 
 import sep.entity.struct.field.Attribute;
 import sep.entity.struct.field.Root;
-import sep.jql.able.Limit;
-import sep.jql.able.Limitable;
-import sep.jql.able.OrderByable;
-import sep.jql.able.SingleJoinable;
-import sep.jql.condition.ConditionChain;
+import sep.jql.able.*;
+import sep.jql.component.Limit;
 import sep.jql.condition.SingleAttributeSpecification;
 
 public class JQLWhere<M> extends SQLConvertibleChain implements OrderByable<M> {
@@ -27,11 +24,6 @@ public class JQLWhere<M> extends SQLConvertibleChain implements OrderByable<M> {
     @Override
     public Limit<M> limit(Integer offset, Integer rowCount) {
         return setNextAndReturn(new JQLLimit<>(offset, rowCount));
-    }
-
-    @Override
-    public JQLStatement<M> end() {
-        return null;
     }
 
     @Override

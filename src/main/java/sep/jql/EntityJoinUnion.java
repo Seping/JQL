@@ -29,7 +29,7 @@ public class EntityJoinUnion {
         }
     }
 
-    public List<Class<?>> getJoinTrace(Class<?> endpoint) {
+    public List<Class<?>> getJoinTrace(Class<?> startpoint, Class<?> endpoint) {
         List<Class<?>> trace = new ArrayList<>();
 
         Class<?> type = endpoint;
@@ -39,7 +39,7 @@ public class EntityJoinUnion {
 
             type = entityTypes.get(index);
             index = indexes.get(entityTypes.indexOf(type));
-        } while (!index.equals(entityTypes.indexOf(type)));
+        } while (!index.equals(entityTypes.indexOf(type)) || type.equals(startpoint));
 
         Collections.reverse(trace);
         return trace;

@@ -1,6 +1,6 @@
 package sep.jql;
 
-import sep.jql.able.Limit;
+import sep.jql.component.Limit;
 
 public class JQLLimit<M> extends SQLConvertibleChain implements Limit<M> {
 

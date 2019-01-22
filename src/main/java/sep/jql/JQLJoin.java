@@ -1,10 +1,9 @@
 package sep.jql;
 
 import sep.entity.resolver.EntityRepository;
-import sep.jql.able.On;
+import sep.jql.component.On;
 import sep.jql.able.Onable;
 import sep.jql.condition.DoubleAttributeSpecification;
-import sep.sql.SQLConvertible;
 
 public class JQLJoin<M, A, B> extends SQLConvertibleChain implements Onable<M, A, B> {
 

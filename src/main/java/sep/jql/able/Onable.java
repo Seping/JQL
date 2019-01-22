@@ -1,5 +1,6 @@
 package sep.jql.able;
 
+import sep.jql.component.On;
 import sep.jql.condition.DoubleAttributeSpecification;
 import sep.sql.SQLConvertible;
 

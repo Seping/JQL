@@ -17,29 +17,11 @@ public class ComplexEntityImpl<T> implements ComplexEntity<T> {
         return mainEntity;
     }
 
-    @Override
-    public List<ComplexEntity<?>> getJoinEntities(Class<?> type) {
+    public <R> List<R> getJoinEntities(Class<R> type) {
         List<?> result = new ArrayList<>();
 
-        Deque<ComplexEntity<?>> deque = new ArrayDeque<>();
-        deque.add(this);
-        do {
-            ComplexEntity<?> complexEntity = deque.poll();
-            for (Class<?> key : complexEntity.getJoinTypes()) {
-                List<ComplexEntity<?>> joinEntities = complexEntity.getJoinEntities(key);
-                if (key.equals(type)) {
-                    for (ComplexEntity<?> complexEntity : joinMap.get(key)) {
-                        result.add((R) complexEntity.getMainEntity());
-                    }
-                    break;
-                } else {
-                    deque.addAll(joinMap.get(key));
-                }
-            }
-            if (deque.size() > 0) {
-                joinMap = deque.getFirst().joinMap;
-            }
-        } while (deque.size() > 0);
+
+
         return result;
     }
 

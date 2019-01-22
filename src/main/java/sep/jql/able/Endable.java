@@ -1,9 +1,9 @@
 package sep.jql.able;
 
-import sep.jql.JQLStatement;
+import sep.jql.statement.Statement;
 
 public interface Endable<T> {
 
-    JQLStatement<T> end();
+    Statement<T> end();
 
 }

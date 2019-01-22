@@ -1,5 +1,6 @@
 package sep.jql.able;
 
+import sep.jql.component.Limit;
 import sep.sql.SQLConvertible;
 
 public interface Limitable<T> extends SQLConvertible {
