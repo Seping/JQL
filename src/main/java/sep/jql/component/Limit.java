@@ -2,5 +2,5 @@ package sep.jql.component;
 
 import sep.sql.SQLConvertible;
 
-public interface Limit<T> extends SQLConvertible {
+public interface Limit<T> {
 }

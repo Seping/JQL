@@ -9,6 +9,4 @@ public interface Condition<T> extends SQLConvertible {
 
     Object getRightAttribute();
 
-
-
 }

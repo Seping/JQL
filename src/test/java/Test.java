@@ -19,6 +19,7 @@ public class Test {
     @org.junit.Test
     public void test() {
 
+
         JQL<AppDbMaterial> jql = JQL.from(AppDbMaterial.class);
 
         jql

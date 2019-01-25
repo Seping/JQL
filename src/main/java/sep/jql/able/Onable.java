@@ -4,7 +4,7 @@ import sep.jql.component.On;
 import sep.jql.condition.DoubleAttributeSpecification;
 import sep.sql.SQLConvertible;
 
-public interface Onable<M, A, B> extends SQLConvertible {
+public interface Onable<M, A, B> {
 
     On<M, A, B> on(DoubleAttributeSpecification<A, B> doubleAttributeSpecification);
 
