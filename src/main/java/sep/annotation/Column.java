@@ -22,7 +22,7 @@ public @interface Column {
 
     /**
      * The class which represents this kind of fields.
-     * The value should be an implement of {@code Field}.
+     * The value should be an impls of {@code Field}.
      *
      * @see sep.entity.struct.field.Field
      */
