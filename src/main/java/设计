@@ -1,0 +1,25 @@
+Request:
+1. 目标
+2. 行为
+
+PageRequest:
+目标: QueryStatement
+行为: if (queryStatement.getLimitStatement == null) {
+    queryStatement.setLimitStatement(limitStatement);
+}
+
+ConditionRequest:
+目标: QueryStatement里的WhereStatement &&
+      QueryStatement里的OnStatement -> onStatement.getJoinClass == xxx.class
+行为: 给WhereStatement或OnStatement里的ConditionStatement拼上条件
+
+谁来生成SQL呢？
+是QueryStatement本身，还是某个外部类？
+外部类。Entity里设定的规则也用Request来实现。
+这些额外的请求是JQL本身的吗？并不是。所以用外部类。
+
+SQLConverter:
+String generateQuerySQL(QueryStatement, Request...) -> 调用 String generateQuerySQL(QueryStatement)
+String generateInsertSQL(...)
+...
+
