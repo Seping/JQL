@@ -1,4 +1,4 @@
 package sep.jql.interfaces.statement;
 
-public interface SelectStatement extends UnaryStatement<SelectExprStatement> {
+public interface SelectStatement extends UnaryStatement<SelectExprCollectionStatement> {
 }

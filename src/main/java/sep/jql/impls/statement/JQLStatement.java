@@ -5,12 +5,4 @@ import sep.jql.interfaces.statement.*;
 import java.util.ArrayList;
 
 public class JQLStatement implements QueryStatement {
-
-
-
-
-    @Override
-    public String toSQLString() {
-        return null;
-    }
 }
