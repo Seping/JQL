@@ -4,14 +4,20 @@ import sep.entity.struct.field.Attribute;
 import sep.jql.interfaces.condition.Condition;
 import sep.jql.interfaces.condition.ConditionBuilder;
 import sep.jql.interfaces.condition.ConditionConjunction;
+import sep.jql.interfaces.statement.ConditionCollectionStatement;
 
-public class JQLConditionBuilder extends SQLConvertibleChain implements ConditionBuilder {
+public class JQLConditionBuilder implements ConditionBuilder {
 
-    Condition<?> condition;
+    private ConditionCollectionStatement conditionCollectionStatement;
+
+    public JQLConditionBuilder(ConditionCollectionStatement conditionCollectionStatement) {
+        this.conditionCollectionStatement = conditionCollectionStatement;
+    }
 
     @Override
     public ConditionConjunction equal(Attribute<?> leftAttribute, Object rightAttribute) {
-        condition = new JQLCondition<>(leftAttribute, rightAttribute, JQLComparisionOperator.EQUAL);
+        Condition condition = new JQLCondition<>(leftAttribute, rightAttribute, JQLComparisionOperator.EQUAL);
+        
         return setNextAndReturn(new JQLConditionConjunction());
     }
 
