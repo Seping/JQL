@@ -1,14 +1,14 @@
 package sep.jql.impls.component;
 
 import sep.entity.resolver.EntityRepository;
-import sep.jql.impls.statement.JQLJoinOnStatement;
-import sep.jql.impls.statement.JQLJoinStatement;
+import sep.jql.impls.statement.joinon.JQLJoinOnStatement;
+import sep.jql.impls.statement.joinon.JQLJoinStatement;
 import sep.jql.interfaces.component.On;
 import sep.jql.interfaces.able.Onable;
 import sep.jql.interfaces.condition.DoubleAttributeSpecification;
-import sep.jql.interfaces.statement.JoinOnStatement;
-import sep.jql.interfaces.statement.JoinStatement;
-import sep.jql.interfaces.statement.QueryStatement;
+import sep.jql.interfaces.statement.joinon.JoinOnStatement;
+import sep.jql.interfaces.statement.joinon.JoinStatement;
+import sep.jql.interfaces.statement.query.QueryStatement;
 
 public class JQLJoin<M, A, B> implements Onable<M, A, B> {
 
@@ -25,12 +25,12 @@ public class JQLJoin<M, A, B> implements Onable<M, A, B> {
         this.queryStatement = queryStatement;
 
         JoinStatement joinStatement = new JQLJoinStatement();
-        joinStatement.setOperand(EntityRepository.getEntity(joinClass));
+        joinStatement.getJoinExpression().setEntity(joinClass);
 
         JoinOnStatement joinOnStatement = new JQLJoinOnStatement();
         joinOnStatement.setJoinStatement(joinStatement);
 
-        queryStatement.getJoinOnCollectionStatement().add(joinOnStatement);
+        queryStatement.getJoinOnStatements().add(joinOnStatement);
 
     }
 

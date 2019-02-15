@@ -1,14 +1,13 @@
 package sep.jql.impls.component;
 
 import sep.entity.struct.field.Root;
-import sep.jql.impls.statement.JQLConditionArrayStatement;
-import sep.jql.impls.statement.JQLOnStatement;
+import sep.jql.impls.statement.JQLConditionExpression;
 import sep.jql.interfaces.component.On;
 import sep.jql.interfaces.condition.ConditionBuilder;
 import sep.jql.interfaces.condition.DoubleAttributeSpecification;
-import sep.jql.interfaces.statement.ConditionArrayStatement;
-import sep.jql.interfaces.statement.OnStatement;
-import sep.jql.interfaces.statement.QueryStatement;
+import sep.jql.interfaces.statement.CompoundConditionStatement;
+import sep.jql.interfaces.statement.ConditionExpression;
+import sep.jql.interfaces.statement.query.QueryStatement;
 
 public class JQLOn<M, A, B> implements On<M, A, B> {
 
@@ -20,11 +19,11 @@ public class JQLOn<M, A, B> implements On<M, A, B> {
         this.rootClass = rootClass;
         this.joinClass = joinClass;
 
-        ConditionArrayStatement conditionCollectionStatement = new JQLConditionArrayStatement();
+        ConditionExpression conditionExpression = new JQLConditionExpression();
 
         Root<A> root1 = new Root<>();
         Root<B> root2 = new Root<>();
-        ConditionBuilder conditionBuilder = new JQLConditionBuilder(conditionCollectionStatement);
+        ConditionBuilder conditionBuilder = new JQLConditionBuilder(conditionExpression);
 
         doubleAttributeSpecification.specific(root1, root2, conditionBuilder);
 

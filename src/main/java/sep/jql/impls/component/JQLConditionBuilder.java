@@ -4,14 +4,15 @@ import sep.entity.struct.field.Attribute;
 import sep.jql.interfaces.condition.Condition;
 import sep.jql.interfaces.condition.ConditionBuilder;
 import sep.jql.interfaces.condition.ConditionConjunction;
-import sep.jql.interfaces.statement.ConditionArrayStatement;
+import sep.jql.interfaces.statement.CompoundConditionStatement;
+import sep.jql.interfaces.statement.ConditionExpression;
 
 public class JQLConditionBuilder implements ConditionBuilder {
 
-    private ConditionArrayStatement conditionCollectionStatement;
+    private ConditionExpression conditionExpression;
 
-    public JQLConditionBuilder(ConditionArrayStatement conditionCollectionStatement) {
-        this.conditionCollectionStatement = conditionCollectionStatement;
+    public JQLConditionBuilder(ConditionExpression conditionExpression) {
+        this.conditionExpression = conditionExpression;
     }
 
     @Override
