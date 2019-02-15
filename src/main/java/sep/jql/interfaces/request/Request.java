@@ -1,6 +1,6 @@
 package sep.jql.interfaces.request;
 
-import sep.jql.interfaces.statement.Statement;
+import sep.jql.interfaces.statement.basic.Statement;
 
 public interface Request {
 

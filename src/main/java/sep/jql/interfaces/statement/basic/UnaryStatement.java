@@ -1,6 +1,4 @@
-package sep.jql.interfaces.statement;
-
-import sep.sql.SQLConvertible;
+package sep.jql.interfaces.statement.basic;
 
 public interface UnaryStatement<T> extends Statement {
 

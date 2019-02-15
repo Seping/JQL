@@ -1,6 +1,9 @@
 package sep.jql.interfaces.statement;
 
-public interface QueryStatement extends CollectionStatement<Statement> {
+import sep.jql.interfaces.statement.basic.ArrayStatement;
+import sep.jql.interfaces.statement.basic.Statement;
+
+public interface QueryStatement extends ArrayStatement<Statement> {
 
     void setSelectStatement(SelectStatement selectStatement);
 
@@ -8,6 +11,6 @@ public interface QueryStatement extends CollectionStatement<Statement> {
 
     SelectStatement getSelectStatement();
 
-    JoinOnCollectionStatement getJoinOnCollectionStatement();
+    JoinOnArrayStatement getJoinOnCollectionStatement();
 
 }

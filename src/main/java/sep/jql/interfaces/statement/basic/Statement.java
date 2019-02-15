@@ -1,4 +1,4 @@
-package sep.jql.interfaces.statement;
+package sep.jql.interfaces.statement.basic;
 
 import sep.sql.SQLConvertible;
 
