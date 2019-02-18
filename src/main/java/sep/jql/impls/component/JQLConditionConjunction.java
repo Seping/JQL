@@ -1,27 +1,28 @@
 package sep.jql.impls.component;
 
+import sep.jql.impls.statement.condition.JQLCompositeConditionExpression;
 import sep.jql.interfaces.condition.ConditionBuilder;
 import sep.jql.interfaces.condition.ConditionConjunction;
-import sep.jql.interfaces.condition.LogicalOperator;
+import sep.jql.interfaces.statement.condition.CompositeConditionExpression;
+import sep.jql.interfaces.statement.condition.ConditionExpression;
 
-public class JQLConditionConjunction extends SQLConvertibleChain implements ConditionConjunction {
+public class JQLConditionConjunction implements ConditionConjunction {
 
-    LogicalOperator logicalOperator;
+    private CompositeConditionExpression compositeConditionExpression;
+
+    JQLConditionConjunction(CompositeConditionExpression compositeConditionExpression) {
+        this.compositeConditionExpression = compositeConditionExpression;
+    }
 
     @Override
     public ConditionBuilder and() {
-        this.logicalOperator = JQLLogicalOperator.AND;
-        return setNextAndReturn(new JQLConditionBuilder());
+        compositeConditionExpression.connectConditionExpression(JQLLogicalOperator.AND);
+        return new JQLConditionBuilder(compositeConditionExpression);
     }
 
     @Override
     public ConditionBuilder or() {
-        this.logicalOperator = JQLLogicalOperator.OR;
-        return setNextAndReturn(new JQLConditionBuilder());
-    }
-
-    @Override
-    public String toSQLString() {
-        return logicalOperator == null ? "" : "\r\n\t\t" + logicalOperator.toSQLString() + " ";
+        compositeConditionExpression.connectConditionExpression(JQLLogicalOperator.OR);
+        return new JQLConditionBuilder(compositeConditionExpression);
     }
 }
