@@ -1,6 +1,6 @@
 package sep.jql.impls.component;
 
-import sep.entity.struct.field.Attribute;
+import sep.entity.struct.field.attribute.Attribute;
 import sep.jql.interfaces.condition.ComparisonOperator;
 import sep.jql.interfaces.condition.Condition;
 import sep.util.SQLStringUtil;

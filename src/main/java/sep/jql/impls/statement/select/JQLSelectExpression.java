@@ -2,7 +2,7 @@ package sep.jql.impls.statement.select;
 
 import sep.entity.resolver.EntityRepository;
 import sep.entity.struct.entity.Entity;
-import sep.entity.struct.field.Attribute;
+import sep.entity.struct.field.attribute.Attribute;
 import sep.entity.struct.field.Field;
 import sep.jql.interfaces.statement.select.SelectExpression;
 

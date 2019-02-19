@@ -1,6 +1,7 @@
 package sep.entity.struct.field;
 
 import sep.entity.struct.entity.Entity;
+import sep.entity.struct.field.attribute.Attribute;
 import sep.sql.SQLConvertible;
 
 /**

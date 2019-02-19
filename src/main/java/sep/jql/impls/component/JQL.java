@@ -1,6 +1,6 @@
 package sep.jql.impls.component;
 
-import sep.entity.struct.field.Attribute;
+import sep.entity.struct.field.attribute.Attribute;
 import sep.jql.impls.statement.JQLStatement;
 import sep.jql.impls.statement.from.JQLFromStatement;
 import sep.jql.impls.statement.select.JQLSelectStatement;

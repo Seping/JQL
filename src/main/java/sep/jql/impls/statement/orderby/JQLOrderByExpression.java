@@ -1,9 +1,8 @@
 package sep.jql.impls.statement.orderby;
 
-import sep.entity.struct.field.Attribute;
+import sep.entity.struct.field.attribute.Attribute;
 import sep.jql.interfaces.order.Order;
 import sep.jql.interfaces.statement.orderby.OrderByExpression;
-import sep.jql.interfaces.statement.orderby.OrderByStatement;
 
 public class JQLOrderByExpression implements OrderByExpression {
 

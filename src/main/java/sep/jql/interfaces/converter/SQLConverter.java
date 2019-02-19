@@ -7,6 +7,6 @@ public interface SQLConverter {
 
     String generateQuerySQL(QueryStatement queryStatement);
 
-    String generateQuerySQL(QueryStatement queryStatement, Request request);
+    String generateQuerySQL(QueryStatement queryStatement, Request...requests);
 
 }

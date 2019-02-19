@@ -1,7 +1,8 @@
-package sep.entity.struct.field;
+package sep.entity.struct.field.attribute;
 
 import sep.entity.resolver.EntityRepository;
 import sep.entity.struct.entity.Entity;
+import sep.entity.struct.field.Field;
 import sep.sql.SQLConvertible;
 
 import java.io.Serializable;

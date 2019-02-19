@@ -1,6 +1,6 @@
 package sep.jql.interfaces.condition;
 
-import sep.entity.struct.field.Root;
+import sep.entity.struct.field.root.Root;
 
 public interface DoubleAttributeSpecification<A, B> {
 

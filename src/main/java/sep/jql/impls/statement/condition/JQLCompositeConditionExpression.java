@@ -27,8 +27,11 @@ public class JQLCompositeConditionExpression implements CompositeConditionExpres
         } else {
             if (isComplete()) {
                 reborn();
+            } else if (isEmpty()) {
+                //do nothing
+            } else {
+                this.logicalOperator = logicalOperator;
             }
-            this.logicalOperator = logicalOperator;
         }
     }
 

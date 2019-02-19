@@ -4,7 +4,7 @@ import org.objectweb.asm.*;
 import sep.entity.struct.entity.Entity;
 import sep.entity.struct.entity.EntityImpl;
 import sep.entity.struct.field.Field;
-import sep.entity.struct.field.Attribute;
+import sep.entity.struct.field.attribute.Attribute;
 
 import java.io.*;
 import java.lang.invoke.*;

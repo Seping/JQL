@@ -1,12 +1,10 @@
 package sep.entity.struct.entity;
 
-import sep.entity.struct.field.Attribute;
+import sep.entity.struct.field.attribute.Attribute;
 import sep.entity.struct.field.Field;
-import sep.entity.struct.field.special.Tombstone;
 import sep.sql.SQLConvertible;
 
 import java.util.List;
-import java.util.function.Supplier;
 
 public interface Entity<T> extends SQLConvertible {
 

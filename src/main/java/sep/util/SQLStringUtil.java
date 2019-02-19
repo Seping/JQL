@@ -1,6 +1,6 @@
 package sep.util;
 
-import sep.entity.struct.field.Attribute;
+import sep.entity.struct.field.attribute.Attribute;
 import sep.entity.struct.field.Field;
 
 import java.util.Collection;

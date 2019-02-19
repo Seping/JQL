@@ -1,6 +1,6 @@
 package sep.jql.impls.component;
 
-import sep.entity.struct.field.Attribute;
+import sep.entity.struct.field.attribute.Attribute;
 import sep.jql.impls.statement.orderby.JQLOrderByExpression;
 import sep.jql.impls.statement.orderby.JQLOrderByStatement;
 import sep.jql.interfaces.component.Limit;

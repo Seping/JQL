@@ -1,7 +1,7 @@
 package sep.jql.impls.component;
 
-import sep.entity.struct.field.Attribute;
-import sep.entity.struct.field.Root;
+import sep.entity.struct.field.attribute.Attribute;
+import sep.entity.struct.field.root.Root;
 import sep.jql.impls.statement.condition.JQLCompositeConditionExpression;
 import sep.jql.impls.statement.joinon.JQLOnStatement;
 import sep.jql.interfaces.able.Limitable;

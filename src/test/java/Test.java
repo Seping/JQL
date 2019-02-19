@@ -1,6 +1,13 @@
 
+import sep.entity.struct.field.root.ArbitraryRoot;
+import sep.entity.struct.field.root.Root;
 import sep.jql.impls.component.JQL;
 import sep.jql.impls.component.Order;
+import sep.jql.impls.request.ConditionRequestBuilder;
+import sep.jql.interfaces.condition.ConditionConjunction;
+import sep.jql.interfaces.request.condition.ArbitraryConditionRequest;
+import sep.jql.interfaces.request.condition.ConditionRequest;
+import sep.jql.interfaces.request.condition.SpecificConditionRequest;
 import 用来存放测试用的实体类.*;
 
 public class Test {
@@ -33,6 +40,26 @@ public class Test {
         String s = jql.queryStatement.toSQLString();
         System.out.println(s);
 
+        SpecificConditionRequest<AppDbMaterial> conditionRequest = new SpecificConditionRequest<AppDbMaterial>() {
+            @Override
+            public ConditionConjunction appendCondition(Root<AppDbMaterial> root, ConditionConjunction conditionConjunction) {
+                return conditionConjunction.and().equal(root.getAttribute(AppDbMaterial::getDtQuaguaPeriod), 1);
+            }
+        };
+
+        ConditionRequestBuilder.ofArbitraryEntity()
+                .request((root, conditionConjunction) -> {
+                    return conditionConjunction
+                            .and()
+                            .equal(root.getAttribute("sys_i_status"), 1);
+                });
+
+        ConditionRequestBuilder.ofEntity(AppDbMaterial.class)
+                .request((root, conditionConjunction) -> {
+                    return conditionConjunction
+                            .and()
+                            .equal(root.getAttribute(AppDbMaterial::getDtQuaguaPeriod), 1);
+                });
     }
 
 }

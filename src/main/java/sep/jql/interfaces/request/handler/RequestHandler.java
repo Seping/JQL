@@ -3,8 +3,8 @@ package sep.jql.interfaces.request.handler;
 import sep.jql.interfaces.request.Request;
 import sep.jql.interfaces.statement.Statement;
 
-public interface RequestHandler {
+public interface RequestHandler<S extends Statement, R extends Request> {
 
-    Statement handle(Request request);
+    void handle(S statement, R request);
 
 }

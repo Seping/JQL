@@ -1,6 +1,6 @@
 package sep.jql.interfaces.condition;
 
-import sep.entity.struct.field.Attribute;
+import sep.entity.struct.field.attribute.Attribute;
 
 public interface ConditionBuilder {
 

@@ -1,6 +1,6 @@
 package sep.jql.interfaces.able;
 
-import sep.entity.struct.field.Attribute;
+import sep.entity.struct.field.attribute.Attribute;
 import sep.jql.interfaces.order.Order;
 
 public interface OrderByable<M> extends Limitable<M> {
