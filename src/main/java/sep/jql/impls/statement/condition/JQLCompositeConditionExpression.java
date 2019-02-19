@@ -51,4 +51,11 @@ public class JQLCompositeConditionExpression implements CompositeConditionExpres
         conditionExpressions[0] = newExpression;
         conditionExpressions[1] = null;
     }
+
+    @Override
+    public String toSQLString() {
+        return logicalOperator == null ?
+                conditionExpressions[0].toSQLString() :
+                conditionExpressions[0].toSQLString() + "\r\n\t\t" + logicalOperator.toSQLString() + " " + conditionExpressions[1].toSQLString();
+    }
 }

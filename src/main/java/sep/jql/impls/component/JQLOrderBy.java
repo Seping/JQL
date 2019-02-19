@@ -1,24 +1,33 @@
 package sep.jql.impls.component;
 
 import sep.entity.struct.field.Attribute;
+import sep.jql.impls.statement.orderby.JQLOrderByExpression;
+import sep.jql.impls.statement.orderby.JQLOrderByStatement;
 import sep.jql.interfaces.component.Limit;
 import sep.jql.interfaces.able.Limitable;
+import sep.jql.interfaces.order.Order;
+import sep.jql.interfaces.statement.orderby.OrderByExpression;
+import sep.jql.interfaces.statement.orderby.OrderByStatement;
+import sep.jql.interfaces.statement.query.QueryStatement;
 
-public class JQLOrderBy<M> extends SQLConvertibleChain implements Limitable<M> {
+public class JQLOrderBy<M> implements Limitable<M> {
 
-    Attribute<M> attribute;
+    private QueryStatement queryStatement;
 
-    public JQLOrderBy(Attribute<M> attribute) {
-        this.attribute = attribute;
+    public JQLOrderBy(QueryStatement queryStatement, Attribute<M> attribute, Order order) {
+        this.queryStatement = queryStatement;
+
+        OrderByExpression orderByExpression = new JQLOrderByExpression(attribute, order);
+
+        OrderByStatement orderByStatement = new JQLOrderByStatement();
+        orderByStatement.setOrderByExpression(orderByExpression);
+
+        queryStatement.setOrderByStatement(orderByStatement);
     }
 
     @Override
     public Limit<M> limit(Integer offset, Integer rowCount) {
-        return setNextAndReturn(new JQLLimit<>(offset, rowCount));
+        return new JQLLimit<>(queryStatement, offset, rowCount);
     }
 
-    @Override
-    public String toSQLString() {
-        return "\r\nORDER BY " + attribute.toSQLString();
-    }
 }

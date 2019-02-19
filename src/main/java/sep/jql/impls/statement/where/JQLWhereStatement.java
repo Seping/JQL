@@ -1,9 +1,9 @@
-package sep.jql.impls.statement.joinon;
+package sep.jql.impls.statement.where;
 
 import sep.jql.interfaces.statement.condition.ConditionExpression;
-import sep.jql.interfaces.statement.joinon.OnStatement;
+import sep.jql.interfaces.statement.where.WhereStatement;
 
-public class JQLOnStatement implements OnStatement {
+public class JQLWhereStatement implements WhereStatement {
 
     private ConditionExpression conditionExpression;
 
@@ -14,6 +14,6 @@ public class JQLOnStatement implements OnStatement {
 
     @Override
     public String toSQLString() {
-        return "ON " + conditionExpression.toSQLString();
+        return "WHERE " + conditionExpression.toSQLString();
     }
 }

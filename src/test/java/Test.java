@@ -1,5 +1,6 @@
 
 import sep.jql.impls.component.JQL;
+import sep.jql.impls.component.Order;
 import 用来存放测试用的实体类.*;
 
 public class Test {
@@ -26,11 +27,12 @@ public class Test {
                     return conditionChain
                             .equal(root1.getAttribute(AppDbMaterial::getiNumber), 1);
                 })
-                .orderBy(AppDbMaterial::getDtQuaguaPeriod)
+                .orderBy(AppDbMaterial::getDtQuaguaPeriod, Order.DESC)
                 .limit(0, 1);
 
-        String s = jql.toSQLStringChain();
+        String s = jql.queryStatement.toSQLString();
         System.out.println(s);
+
     }
 
 }

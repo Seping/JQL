@@ -1,4 +1,6 @@
 package sep.jql.interfaces.statement;
 
-public interface Expression {
+import sep.sql.SQLConvertible;
+
+public interface Expression extends SQLConvertible {
 }

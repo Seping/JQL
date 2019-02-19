@@ -1,10 +1,8 @@
 package sep.jql.impls.component;
 
-import sep.jql.impls.statement.condition.JQLCompositeConditionExpression;
 import sep.jql.interfaces.condition.ConditionBuilder;
 import sep.jql.interfaces.condition.ConditionConjunction;
 import sep.jql.interfaces.statement.condition.CompositeConditionExpression;
-import sep.jql.interfaces.statement.condition.ConditionExpression;
 
 public class JQLConditionConjunction implements ConditionConjunction {
 

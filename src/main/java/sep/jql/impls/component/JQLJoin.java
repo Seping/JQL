@@ -1,6 +1,5 @@
 package sep.jql.impls.component;
 
-import sep.entity.resolver.EntityRepository;
 import sep.jql.impls.statement.joinon.JQLJoinOnStatement;
 import sep.jql.impls.statement.joinon.JQLJoinStatement;
 import sep.jql.interfaces.component.On;

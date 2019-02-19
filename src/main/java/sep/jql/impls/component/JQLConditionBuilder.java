@@ -1,14 +1,12 @@
 package sep.jql.impls.component;
 
 import sep.entity.struct.field.Attribute;
-import sep.jql.impls.statement.condition.JQLCompositeConditionExpression;
 import sep.jql.impls.statement.condition.JQLSingleConditionExpression;
 import sep.jql.interfaces.condition.ComparisonOperator;
 import sep.jql.interfaces.condition.Condition;
 import sep.jql.interfaces.condition.ConditionBuilder;
 import sep.jql.interfaces.condition.ConditionConjunction;
 import sep.jql.interfaces.statement.condition.CompositeConditionExpression;
-import sep.jql.interfaces.statement.condition.ConditionExpression;
 import sep.jql.interfaces.statement.condition.SingleConditionExpression;
 
 public class JQLConditionBuilder implements ConditionBuilder {
