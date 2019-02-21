@@ -1,5 +1,6 @@
 package sep.jql.impls.request;
 
+import sep.jql.interfaces.request.Request;
 import sep.jql.interfaces.request.builder.RequestBuilder;
 import sep.jql.interfaces.request.condition.ArbitraryConditionRequest;
 import sep.jql.interfaces.request.condition.ConditionRequest;
@@ -18,7 +19,7 @@ public class ConditionRequestBuilder<R extends ConditionRequest> implements Requ
     }
 
     @Override
-    public void request(R request) {
-
+    public Request request(R request) {
+        return request;
     }
 }
