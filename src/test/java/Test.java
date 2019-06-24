@@ -5,6 +5,8 @@ import sep.entity.struct.field.root.Root;
 import sep.jql.impls.component.*;
 import sep.jql.impls.request.condition.builder.ConditionRequestBuilder;
 import sep.jql.impls.request.condition.handler.JQLConditionRequestHandler;
+import sep.jql.impls.request.page.JQLPageRequest;
+import sep.jql.impls.request.page.handler.JQLPageRequestHandler;
 import sep.jql.impls.statement.condition.JQLCompositeConditionExpression;
 import sep.jql.interfaces.condition.ConditionConjunction;
 import sep.jql.interfaces.condition.LogicalOperator;
@@ -75,6 +77,9 @@ public class Test {
                 });
 
         new JQLConditionRequestHandler().handle(jql.queryStatement, request2);
+
+        new JQLPageRequestHandler().handle(jql.queryStatement, JQLPageRequest.of(0, 2));
+
         String s1 = jql.queryStatement.toSQLString();
         System.out.println(s1);
     }

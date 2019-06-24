@@ -18,6 +18,8 @@ public interface Entity<T> extends SQLConvertible {
 
     Field<T, ?> getFieldByAttributeName(String attributeName);
 
+    <F extends Field<T, ?>> F getFieldByFieldType(Class<?> fieldType);
+
     Attribute<T> getAttribute(Attribute<T> attribute);
 
     Attribute<T> getAttributeByName(String attributeName);

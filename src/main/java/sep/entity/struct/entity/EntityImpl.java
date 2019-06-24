@@ -50,6 +50,15 @@ public class EntityImpl<T> implements Entity<T> {
     }
 
     @Override
+    public <F extends Field<T, ?>> F getFieldByFieldType(Class<?> fieldType) {
+        return (F) fields
+                .stream()
+                .filter(field -> field.getClass().equals(fieldType))
+                .findFirst()
+                .get();
+    }
+
+    @Override
     public Attribute<T> getAttribute(Attribute<T> attribute) {
         return fields
                 .stream()

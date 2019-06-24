@@ -1,6 +1,7 @@
 package sep.result;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 public interface CompositeEntity<T> {
@@ -10,5 +11,7 @@ public interface CompositeEntity<T> {
     <R> List<R> getJoinEntities(Class<R> type);
 
     Set<Class<?>> getJoinTypes();
+
+    Map<Class<?>, List<CompositeEntity<?>>> getJoinMap();
 
 }
