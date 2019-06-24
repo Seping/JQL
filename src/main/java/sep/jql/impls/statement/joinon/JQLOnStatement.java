@@ -8,6 +8,11 @@ public class JQLOnStatement implements OnStatement {
     private ConditionExpression conditionExpression;
 
     @Override
+    public ConditionExpression getConditionExpression() {
+        return conditionExpression;
+    }
+
+    @Override
     public void setConditionExpression(ConditionExpression conditionExpression) {
         this.conditionExpression = conditionExpression;
     }

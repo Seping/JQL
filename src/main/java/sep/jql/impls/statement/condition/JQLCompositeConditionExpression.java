@@ -22,7 +22,7 @@ public class JQLCompositeConditionExpression implements CompositeConditionExpres
 
     @Override
     public void connectConditionExpression(LogicalOperator logicalOperator) {
-        if (this.logicalOperator != null) {
+        /*if (this.logicalOperator != null) {
             throw new IllegalStateException();
         } else {
             if (isComplete()) {
@@ -32,7 +32,13 @@ public class JQLCompositeConditionExpression implements CompositeConditionExpres
             } else {
                 this.logicalOperator = logicalOperator;
             }
+        }*/
+        if (isComplete()) {
+            reborn();
+        } else if (isEmpty()) {
+            //do nothing
         }
+        this.logicalOperator = logicalOperator;
     }
 
     @Override
@@ -53,6 +59,7 @@ public class JQLCompositeConditionExpression implements CompositeConditionExpres
 
         conditionExpressions[0] = newExpression;
         conditionExpressions[1] = null;
+        this.logicalOperator = null;
     }
 
     @Override
@@ -60,5 +67,10 @@ public class JQLCompositeConditionExpression implements CompositeConditionExpres
         return logicalOperator == null ?
                 conditionExpressions[0].toSQLString() :
                 conditionExpressions[0].toSQLString() + "\r\n\t\t" + logicalOperator.toSQLString() + " " + conditionExpressions[1].toSQLString();
+    }
+
+    @Override
+    public CompositeConditionExpression compositize() {
+        return this;
     }
 }

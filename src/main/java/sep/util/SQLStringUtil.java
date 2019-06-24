@@ -56,4 +56,22 @@ public class SQLStringUtil {
         stringBuffer.append(")");
         return stringBuffer.toString();
     }
+
+    public static String underscoreCaseToCamelCase(String underscoreCase, boolean initialCapitalization) {
+        int basicLength = underscoreCase.length();
+        char[] chars = new char[basicLength];
+        char firstLetter = underscoreCase.charAt(0);
+        chars[0] = (firstLetter >= 'a' && firstLetter <= 'z' && initialCapitalization) ? (char) (firstLetter - 32) : firstLetter;
+        for (int i = 1, j = 1; i < basicLength; i++, j++) {
+            if (underscoreCase.charAt(i) == '_') {
+                if (i != basicLength - 1) {
+                    i++;
+                    chars[j] = (char) (underscoreCase.charAt(i) - 32);
+                }
+            } else {
+                chars[j] = underscoreCase.charAt(i);
+            }
+        }
+        return String.valueOf(chars);
+    }
 }

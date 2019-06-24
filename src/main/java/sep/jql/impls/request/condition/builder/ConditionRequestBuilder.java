@@ -1,4 +1,4 @@
-package sep.jql.impls.request;
+package sep.jql.impls.request.condition.builder;
 
 import sep.jql.interfaces.request.Request;
 import sep.jql.interfaces.request.builder.RequestBuilder;

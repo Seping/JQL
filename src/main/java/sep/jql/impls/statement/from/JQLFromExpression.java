@@ -9,6 +9,11 @@ public class JQLFromExpression implements FromExpression {
     private Entity entity;
 
     @Override
+    public <E> Entity<E> getEntity() {
+        return entity;
+    }
+
+    @Override
     public <E> void setEntity(Class<E> entityClass) {
         entity = EntityRepository.getEntity(entityClass);
     }

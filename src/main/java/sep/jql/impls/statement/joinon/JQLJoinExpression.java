@@ -9,6 +9,10 @@ public class JQLJoinExpression implements JoinExpression {
     private Entity entity;
 
     @Override
+    public <E> Entity<E> getEntity() {
+        return entity;
+    }
+
     public <E> void setEntity(Class<E> joinClass) {
         entity = EntityRepository.getEntity(joinClass);
     }
@@ -17,4 +21,5 @@ public class JQLJoinExpression implements JoinExpression {
     public String toSQLString() {
         return entity.toSQLString();
     }
+
 }

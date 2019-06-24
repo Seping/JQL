@@ -1,14 +1,25 @@
 
-import sep.entity.struct.field.root.ArbitraryRoot;
+import sep.entity.struct.field.attribute.ArbitraryAttribute;
+import sep.entity.struct.field.attribute.Attribute;
 import sep.entity.struct.field.root.Root;
-import sep.jql.impls.component.JQL;
-import sep.jql.impls.component.Order;
-import sep.jql.impls.request.ConditionRequestBuilder;
+import sep.jql.impls.component.*;
+import sep.jql.impls.request.condition.builder.ConditionRequestBuilder;
+import sep.jql.impls.request.condition.handler.JQLConditionRequestHandler;
+import sep.jql.impls.statement.condition.JQLCompositeConditionExpression;
 import sep.jql.interfaces.condition.ConditionConjunction;
+import sep.jql.interfaces.condition.LogicalOperator;
 import sep.jql.interfaces.request.condition.ArbitraryConditionRequest;
-import sep.jql.interfaces.request.condition.ConditionRequest;
 import sep.jql.interfaces.request.condition.SpecificConditionRequest;
+import sep.jql.interfaces.statement.condition.CompositeConditionExpression;
+import sep.jql.interfaces.statement.condition.ConditionExpression;
+import sep.jql.interfaces.statement.condition.SingleConditionExpression;
+import sep.jql.interfaces.statement.joinon.JoinOnStatement;
+import sep.jql.interfaces.statement.query.QueryStatement;
+import sep.jql.interfaces.statement.where.WhereStatement;
 import 用来存放测试用的实体类.*;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class Test {
 
@@ -32,7 +43,9 @@ public class Test {
                 })
                 .where((root1, conditionChain) -> {
                     return conditionChain
-                            .equal(root1.getAttribute(AppDbMaterial::getiNumber), 1);
+                            .equal(root1.getAttribute(AppDbMaterial::getiNumber), 1)
+                            .and()
+                            .equal(root1.getAttribute(AppDbMaterial::getVcName), "abc");
                 })
                 .orderBy(AppDbMaterial::getDtQuaguaPeriod, Order.DESC)
                 .limit(0, 1);
@@ -47,19 +60,23 @@ public class Test {
             }
         };
 
-        ConditionRequestBuilder.ofArbitraryEntity()
+        ArbitraryConditionRequest request1 = (ArbitraryConditionRequest) ConditionRequestBuilder.ofArbitraryEntity()
                 .request((root, conditionConjunction) -> {
                     return conditionConjunction
                             .and()
-                            .equal(root.getAttribute("sys_i_status"), 1);
+                            .equal(root.getAttribute("getSysIStatus"), 1);
                 });
 
-        ConditionRequestBuilder.ofEntity(AppDbMaterial.class)
+        SpecificConditionRequest<AppDbMaterial> request2 = (SpecificConditionRequest<AppDbMaterial>) ConditionRequestBuilder.ofEntity(AppDbMaterial.class)
                 .request((root, conditionConjunction) -> {
                     return conditionConjunction
                             .and()
                             .equal(root.getAttribute(AppDbMaterial::getDtQuaguaPeriod), 1);
                 });
+
+        new JQLConditionRequestHandler().handle(jql.queryStatement, request2);
+        String s1 = jql.queryStatement.toSQLString();
+        System.out.println(s1);
     }
 
 }

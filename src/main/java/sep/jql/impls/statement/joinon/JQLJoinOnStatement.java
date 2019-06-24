@@ -10,6 +10,16 @@ public class JQLJoinOnStatement implements JoinOnStatement {
     private OnStatement onStatement;
 
     @Override
+    public JoinStatement getJoinStatement() {
+        return joinStatement;
+    }
+
+    @Override
+    public OnStatement getOnStatement() {
+        return onStatement;
+    }
+
+    @Override
     public void setJoinStatement(JoinStatement joinStatement) {
         this.joinStatement = joinStatement;
     }

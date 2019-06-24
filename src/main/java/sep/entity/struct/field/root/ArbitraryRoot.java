@@ -5,6 +5,6 @@ import sep.entity.struct.field.attribute.Attribute;
 
 public class ArbitraryRoot {
     public Attribute<?> getAttribute(String attributeName) {
-        return new ArbitraryAttribute();
+        return new ArbitraryAttribute(attributeName);
     }
 }

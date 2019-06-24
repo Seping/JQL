@@ -11,6 +11,11 @@ public class JQLJoinOnStatements implements JoinOnStatements {
     private List<JoinOnStatement> joinOnStatementList = new ArrayList<>();
 
     @Override
+    public List<JoinOnStatement> getJoinOnStatementList() {
+        return joinOnStatementList;
+    }
+
+    @Override
     public void add(JoinOnStatement joinOnStatement) {
         joinOnStatementList.add(joinOnStatement);
     }

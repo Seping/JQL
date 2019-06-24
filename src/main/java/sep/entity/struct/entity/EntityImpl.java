@@ -51,7 +51,12 @@ public class EntityImpl<T> implements Entity<T> {
 
     @Override
     public Attribute<T> getAttribute(Attribute<T> attribute) {
-        return attribute;
+        return fields
+                .stream()
+                .filter(field -> field.getAttribute().toSQLString().equals(attribute.toSQLString()))
+                .findFirst()
+                .map(field -> field.getAttribute())
+                .orElse(null);
     }
 
     @Override
