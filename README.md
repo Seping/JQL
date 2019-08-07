@@ -1,28 +1,29 @@
 # JQL
 
-        JQL<AppDbMaterial> jql = JQL.from(AppDbMaterial.class);
+JQL is a framework tries to make Java CRUD code more SQL-like and Java-like. You could code like
+`
+JQL
+        .from(User.class)
+        .join(City.class)
+        .on((root1, root2, conditionChain) -> {
+                return conditionChain
+                        .equal(root1.getAttribute(User::getCityName), root2.getAttribute(City::getName));
+        })
+        .where((root1, conditionChain) -> {
+                return conditionChain
+                        .equal(root1.getAttribute(User::getUserName), "John Constantine")
+                        .and()
+                        .greater(root1.getAttribute(User::getBirthYear), 1953);
+        });
+`
 
-        jql
-                .join(AppDbMaterialAddress.class)
-                .on((root1, root2, conditionChain) -> {
-                    return conditionChain
-                            .equal(root1.getAttribute(AppDbMaterial::getiMaterialAddressId), root2.getAttribute(AppDbMaterialAddress::getiId))
-                            .and()
-                            .equal(root1.getAttribute(AppDbMaterial::getVcName), root2.getAttribute(AppDbMaterialAddress::getVcName));
-                })
-                .join(AppDbMaterialAddress.class, AppArea.class)
-                .on((root1, root2, conditionChain) -> {
-                    return conditionChain
-                            .equal(root1.getAttribute(AppDbMaterialAddress::getiAreaId), root2.getAttribute(AppArea::getiId));
-                })
-                .where((root1, conditionChain) -> {
-                    return conditionChain
-                            .equal(root1.getAttribute(AppDbMaterial::getiNumber), 1)
-                            .and()
-                            .equal(root1.getAttribute(AppDbMaterial::getVcName), "abc");
-                })
-                .orderBy(AppDbMaterial::getDtQuaguaPeriod, Order.DESC)
-                .limit(0, 1);
+It means
+`
+SELECT *
+FROM user
+	JOIN city ON user.city_name = city.name
+WHERE user.username = 'John Constantine'
+	AND user.birth_year > 1953
+`
 
-        String s = jql.queryStatement.toSQLString();
-        System.out.println(s);
+When using an IDE with auto-completion, you could save the work of typing table name or column name word by word thanks to the 'Method Reference' of Java 8.
