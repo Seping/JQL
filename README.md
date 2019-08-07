@@ -2,7 +2,7 @@
 
 JQL is a framework tries to make Java CRUD code more SQL-like and Java-like. You could code like
 
-`
+``
 JQL
         .from(User.class)
         .join(City.class)
@@ -16,7 +16,7 @@ JQL
                         .and()
                         .greater(root1.getAttribute(User::getBirthYear), 1953);
         });
-`
+``
 
 It means
 
