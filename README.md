@@ -1,6 +1,7 @@
 # JQL
 
 JQL is a framework tries to make Java CRUD code more SQL-like and Java-like. You could code like
+
 `
 JQL
         .from(User.class)
@@ -18,6 +19,7 @@ JQL
 `
 
 It means
+
 `
 SELECT *
 FROM user
