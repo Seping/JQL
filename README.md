@@ -28,4 +28,4 @@ WHERE user.username = 'John Constantine'
 	AND user.birth_year > 1953
 ```
 
-When using an IDE with auto-completion, you could save the work of typing table name or column name word by word thanks to the 'Method Reference' of Java 8.
+When using IDE with auto-completion, you could save the work of typing table name or column name word by word, thanks to the 'Method Reference' of Java 8.
