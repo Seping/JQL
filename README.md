@@ -29,3 +29,8 @@ WHERE user.username = 'John Constantine'
 ```
 
 When using IDE with auto-completion, you could save the work of typing table name or column name word by word, thanks to the 'Method Reference' of Java 8.
+
+It is a prototype which only implements the core concept and not recommanded for use in production environment. But if you are interested in it, welcome to use and give some advice.
+
+## install
+
